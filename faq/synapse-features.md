@@ -1,4 +1,4 @@
-# Content FAQ
+# Synapse FAQs
 
 ### **Q**: _When will we review backup and restore scenarios?_
 
@@ -14,7 +14,7 @@
 
 ### **Q**: _Is Synapse using a form of Azure Notebooks?_
 
-**A**: They are similar. Synapse uses Juypter Notebooks (like Azure Notebooks) with nteract. But it's just a convention enforced in the UI. For Spark notebooks, the Apache Livy API is in charge, so you can create sessions and submit statements from anywhere. Livy provides a REST API to manage and execute Spark sessions.
+**A**: They are similar. Synapse uses Jupyter Notebooks (like Azure Notebooks) with nteract. But it's just a convention enforced in the UI. For Spark notebooks, the Apache Livy API is in charge, so you can create sessions and submit statements from anywhere. Livy provides a REST API to manage and execute Spark sessions.
 
 ---
 
@@ -26,7 +26,7 @@
 
 ### **Q**: _Is there a public doc link for the 90+ inbuilt connectors handy?_
 
-**A**: https://docs.microsoft.com/en-us/azure/data-factory/connector-overview
+**A**: <https://docs.microsoft.com/azure/data-factory/connector-overview>
 
 ---
 
@@ -44,13 +44,13 @@
 
 ### **Q**: _Can I run my ADF pipelines from Synapse?_
 
-**A**: Not directly. You can, for example call an Azure Function that would triger an ADF pipeline.
+**A**: Not directly. You can, for example call an Azure Function that would trigger an ADF pipeline.
 
 ---
 
 ### **Q**: _How can the data flow from Azure Databricks to Synapse be encrypted?_
 
-**A**: Here is a link that can help https://docs.microsoft.com/en-us/azure/azure-databricks/databricks-extract-load-sql-data-warehouse#load-data-into-azure-synapse
+**A**: Here is a link that can help: <https://docs.microsoft.com/azure/azure-databricks/databricks-extract-load-sql-data-warehouse#load-data-into-azure-synapse>
 
 ---
 
@@ -110,7 +110,7 @@
 
 ### **Q**: _How compatible will the notebooks be with standard Jupyter notebooks? thinking about things like support for nbextensions?_
 
-**A**: The notebooks use nteract and can be imported/exported as ipynb. nbextensions don't work, yet. We are working on a pure jupyter compatibility layer for the AML team so their jupyter notebooks can just use Synapse Spark as a remote kernel, so we will be able to support classic jupyter, but it will not be included in the Studio at least for now.
+**A**: The notebooks use nteract and can be imported/exported as ipynb. The nbextensions don't work, yet. We are working on a pure jupyter compatibility layer for the AML team so their jupyter notebooks can just use Synapse Spark as a remote kernel, so we will be able to support classic jupyter, but it will not be included in the Studio at least for now.
 
 ---
 
@@ -134,14 +134,13 @@
 
 ### **Q**: _Can I link a Cosmos DB account?_
 
-**A**: Yes. This capability is made available thru the [Azure Synapse Link for Cosmos DB](https://docs.microsoft.com/en-us/azure/cosmos-db/configure-synapse-link) feature.  
+**A**: Yes. This capability is made available thru the [Azure Synapse Link for Cosmos DB](https://docs.microsoft.com/azure/cosmos-db/configure-synapse-link) feature.  
 
 ---
 
 ### **Q**: _If I want to run ML models, I have to resort to Spark, not SQL, right?_
 
-**A**: Today, for scoring we have the Predict function, which is there in SQL Pools. Use Predict to score data against an ONNX model.
-Training models in SQL is something that is being talked about but not available. To train models you can use Synapse Notebooks. 
+**A**: Today, for scoring we have the Predict function, which is there in SQL Pools. Use Predict to score data against an ONNX model. Training models in SQL is something that is being talked about but not available. To train models you can use Synapse Notebooks.
 
 ---
 
@@ -159,8 +158,7 @@ Training models in SQL is something that is being talked about but not available
 
 ### **Q**: _Will the Spark notebooks have a parameter interface? Widgets and ADF are super helpful._
 
-**A**: You will be able to have a parameter cell and then bind to that from ADF etc. 
-We currently don't plan to provide UI widgets as a way of interacting with those.
+**A**: You will be able to have a parameter cell and then bind to that from ADF etc. We currently don't plan to provide UI widgets as a way of interacting with those.
 
 ---
 
@@ -208,7 +206,7 @@ We currently don't plan to provide UI widgets as a way of interacting with those
 
 ### **Q**: _How does AML service fit into all of this?_
 
-**A**: AML integrates with Synapse spark through packages and connecting to an AML workspace where you can register models, run AutoML, etc. 
+**A**: AML integrates with Synapse spark through packages and connecting to an AML workspace where you can register models, run AutoML, etc.
 
 ---
 
@@ -220,7 +218,7 @@ We currently don't plan to provide UI widgets as a way of interacting with those
 
 ### **Q**: _What is Gen 3?_
 
-**A**: The set of "gen 3" improvements (multi-cluster, online scale, etc.) are not tied to the general synapse preview/GA - it's a separate development effort. 
+**A**: The set of "gen 3" improvements (multi-cluster, online scale, etc.) are not tied to the general synapse preview/GA - it's a separate development effort.
 
 ---
 
@@ -254,7 +252,7 @@ We currently don't plan to provide UI widgets as a way of interacting with those
 
 ---
 
-### **Q**: _How do folders and RBAC work for SQL Scripts and the like, If I have 200 devs how do they segment their work?_
+### **Q**: _How do folders and RBAC work for SQL Scripts and the like? If I have 200 devs how do they segment their work?_
 
 **A**: Currently does not exist in the Synapse preview. (May 2020).
 
