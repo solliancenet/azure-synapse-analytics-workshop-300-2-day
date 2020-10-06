@@ -144,9 +144,11 @@ Nothing required before hand.
         <tr><td>15:45</td></tr>
         <tr>
             <td>16:00</td>
-            <td>Review & Debrief</td>
-            <td>Review & Debrief</td>
+            <td rowspan=3>Review & Debrief</td>
+            <td rowspan=3>Review & Debrief</td>
         </tr>
+        <tr><td>16:15</td></tr>
+        <tr><td>16:30</td></tr>
         <tr><td colspan=3></td></tr>
     </tbody>
 </table>
