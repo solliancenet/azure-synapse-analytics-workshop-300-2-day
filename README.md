@@ -1,5 +1,25 @@
 # Azure Synapse Analytics 2-Day Workshop (level 300, 2 days)
 
+## Event Description
+The Azure Synapse Analytics 2-day L300 workshop provides a 300-level review of Azure Synapse Analytics features, capabilities, and functionality. The workshop is designed to enhance attendee knowledge of the underlying architecture of Azure Synapse Analytics and how to perform common data engineering, data warehousing, and Spark tasks within the unified platform provided by Synapse Studio.
+
+## Why attend?
+This workshop helps to reinforce and expand attendee understanding of Azure Synapse Analytics through PowerPoint presentations and hands-on challenges. Workshop participation allows attendees to get hands-on experience using Azure Synapse Analytics to perform common data ingestion and transformation tasks, secure a Synapse workspace, and experiment with query performance tuning. 
+
+## Event Experiences & Components
+2-day workshop with PPT and hands-on team-based challenge exercises using Azure Synapse Analytics.
+
+## Target Audience
+
+### Pre-Req’s
+This is a level 300 delivery so a level 200 experience with SQL Server or SQL Data Warehouse (if not Synapse SQL Pools) as well as experience using Azure (e.g., managing resources via the Azure Portal) is required. Familiarity with Spark, Azure Data Factory or Azure Machine Learning is beneficial but not required. Some knowledge and experience with Python and Spark is also recommended to get the most out of the workshop hands-on challenges.
+
+Learners will need to use a desktop or laptop computer having a modern browser and a broadband Internet connection (there is no heavy data usage outside of streaming the calls and the RDP protocol access to the lab environment via the browser). 
+
+### Pre-Work
+Nothing required before hand. 
+
+
 ## Workshop Agenda
 
 <table>
@@ -116,7 +136,7 @@
         </tr>
         <tr>
             <td>15:15</td>
-            <td rowspan=4>
+            <td rowspan=3>
                 <a href="./day-01/poc-challenge-2.md">Continue POC Challenge 2</a>
             </td>
         </tr>
@@ -124,9 +144,12 @@
         <tr><td>15:45</td></tr>
         <tr>
             <td>16:00</td>
-            <td>Closing</td>
+            <td rowspan=3>Review & Debrief</td>
+            <td rowspan=3>Review & Debrief</td>
         </tr>
-        <tr><td colspan=3>&nbsp;</td></tr>
+        <tr><td>16:15</td></tr>
+        <tr><td>16:30</td></tr>
+        <tr><td colspan=3></td></tr>
     </tbody>
 </table>
 
