@@ -161,8 +161,6 @@ When executing the script below, it is important to let the scripts run to compl
 
     Select the resource group you selected during Task 3.2. This will make sure automation runs against the correct environment you provisioned in Azure.
 
-    ![The Azure Cloud Shell window is displayed with a selection of resource groups the user owns.](../media/setup-resource-group-selection.png)
-
 ## Steps & Timing
 
 The entire script will take a little over an hour to complete.  Major steps include:
