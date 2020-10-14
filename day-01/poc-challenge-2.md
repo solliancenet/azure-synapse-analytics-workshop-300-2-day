@@ -26,6 +26,11 @@ In addition to the RTO requirements, top management is demanding more and more o
 
 Data post-May 2017 is now coming in as a continuous stream of Parquet files. Propose and implement a data lake architecture where top management can get data with various compromises between delivery speed and accuracy/completeness. Provide a bronze level where freshly collected sales data is analyzed using Synapse SQL Serverless and exposed to dashboards. Provide a silver level where data quality has been increased via data engineering. Finally, provide the gold level where top-quality data has been persisted in a Synapse SQL Pool.
 
+> **TIPS**
+>
+> 1. Think about ways your pipeline can parallelize data ingestion.
+> 2. Consider the impact of indexes on performance when importing data into tables. How can you optimize the process to account for this?
+
 ### Success criteria
 
 - You have created a data loading pipeline that provides a repeatable import process and meets the RTO requirements of a 60-minute full rebuild of the warehouse.

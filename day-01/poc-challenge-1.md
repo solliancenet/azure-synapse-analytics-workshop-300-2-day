@@ -40,6 +40,13 @@ WWI loaded their data to the primary ADLS Gen2 account for the Synapse Analytics
 
 You can find the CSV files for May 2017 in the following path: `wwi-02 / sale-poc`.
 
+> **TIPS**
+>
+> 1. Do not make assumptions about the condition or quality of the data in the CSV files. Synapse Studio allows you to open files using either SQL or Spark in the Data hub to explore the first few files in the May 2017 dataset prior to importing it into tables. Do the data types found in the tables match what you are seeing in the files?
+> 2. Look for issues that could impact your ability to cleanly import the files using a code-free approach (e.g., Are there values in fields that might cause issues? Are the files properly formatted as CSV files?)
+> 3. Take a few minutes to understand the capabilities of Synapse Pipelines, Synapse SQL, and Spark for handling problematic files.
+> 4. Don't be afraid to embrace the Spark side to address any problem files!
+
 You can find the Parquet files in the following paths:
 
 - `wwi-02 / sale-small / Year=2017 / Quarter=Q2 / Month=6`
@@ -48,11 +55,16 @@ You can find the Parquet files in the following paths:
 - `wwi-02 / sale-small / Year=2018`
 - `wwi-02 / sale-small / Year=2019`
 
-You can find the complete customer data in the following path: `wwi-02 / data-generators / generator-customer.csv`. The file should be approximately 140 MB in size.
-
 > **IMPORTANT TECHNICAL NOTE**
 >
 > Do not use other files from the data lake to import sales data as they will invalidate the results of the PoC.
+
+You can find the complete customer data in the following path: `wwi-02 / data-generators / generator-customer.csv`. The file should be approximately 140 MB in size.
+
+> **TIPS**
+>
+> 1. Use Synapse Studio to explore the customer data file and validate the data in each field appears correct.
+> 2. You will need the customer's country of residence later. How might you be able to isolate this value in the address field and add it to a country column?
 
 ## Success criteria
 
