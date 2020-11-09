@@ -31,7 +31,7 @@
 2. On the **Custom deployment** form fill in the fields described below.
 
 * **Subscription**: Select your desired subscription for the deployment.
-* **Resource group**: Select the **Synapse-WS-L400** resource group you previously created.
+* **Resource group**: Select the **Synapse-WS-L300** resource group you previously created.
 * **Unique Suffix**: This unique suffix will be used naming resources that will created as part of your deployment.
 * **SQL Administrator Login Password**: Provide a strong password for the SQLPool that will be created as part of your deployment. Your password will be needed during the next steps. Make sure you have your password noted and secured.
   
@@ -51,27 +51,37 @@
     ```powershell
     if (Get-Module -Name AzureRM -ListAvailable) {
         Write-Warning -Message 'Az module not installed. Having both the AzureRM and Az modules installed at the same time is not supported.'
+        Uninstall-AzureRm -ea SilentlyContinue
+        Install-Module -Name Az -AllowClobber -Scope CurrentUser
     } else {
         Install-Module -Name Az -AllowClobber -Scope CurrentUser
     }
     ```
 
-* `Az.CosmosDB` 0.1.4 cmdlet
+* Install `Az.CosmosDB` module
 
     ```powershell
-    Install-Module -Name Az.CosmosDB -RequiredVersion 0.1.4
+    Install-Module -Name Az.CosmosDB -AllowClobber
     ```
 
-* `sqlserver` module
+* Install `sqlserver` module
 
     ```powershell
-    Install-Module -Name SqlServer
+    Install-Module -Name SqlServer -AllowClobber
+    ```
+
+* Install Azure CLI
+
+    ```powershell
+    Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
     ```
 
 * Install VC Redist: <https://aka.ms/vs/15/release/vc_redist.x64.exe>
 * Install MS ODBC Driver 17 for SQL Server: <https://www.microsoft.com/download/confirmation.aspx?id=56567>
 * Install SQL CMD x64: <https://go.microsoft.com/fwlink/?linkid=2082790>
 * Install Microsoft Online Services Sign-In Assistant for IT Professionals RTW: <https://www.microsoft.com/download/details.aspx?id=41950>
+* Install [Git client](https://git-scm.com/downloads)
+* [Windows PowerShell](https://docs.microsoft.com/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7)
 
 Create the following file: **C:\LabFiles\AzureCreds.ps1**
 
@@ -86,7 +96,16 @@ $AzureSQLPassword="..."
 
 ### Task 2: Execute setup scripts
 
-* Open PowerShell as an Administrator and change directories to the root of this repo within your local file system.
+1. From your machine, open a PowerShell Window as an administrator, run the following command to download the artifacts
+
+    ```powershell
+    mkdir c:\labfiles
+
+    cd c:\labfiles
+
+    git clone https://github.com/solliancenet/azure-synapse-analytics-workshop-300-2-day.git synapse-ws-L300
+    ```
+
 * Run `Set-ExecutionPolicy Unrestricted`.
 * Execute `Connect-AzAccount` and sign in to the ODL user account when prompted.
 * Execute `.\artifacts\environment-setup\automation\01-environment-setup.ps1`.
@@ -105,7 +124,7 @@ $AzureSQLPassword="..."
 2. In the Cloud Shell window, enter the following command to clone the repository files.
 
     ```PowerShell
-    git clone https://github.com/solliancenet/azure-synapse-analytics-workshop-400.git synapse-ws-L400
+    git clone https://github.com/solliancenet/azure-synapse-analytics-workshop-300-2-day.git synapse-ws-L300
     ```
 
     ![The Azure Portal with Cloud shell opened. Git clone command is typed into the cloud shell terminal ready for execution.](../media/cloud-shell-git-clone.png)
@@ -137,7 +156,7 @@ When executing the script below, it is important to let the scripts run to compl
 1. In the Cloud Shell, change the current directory to the **automation** folder of the cloned repository by executing the following:
 
     ```PowerShell
-    git clone https://github.com/solliancenet/azure-synapse-analytics-workshop-400.git synapse-ws-L400
+    git clone https://github.com/solliancenet/azure-synapse-analytics-workshop-300.git synapse-ws-L300
 
     cd './synapse-ws-L400/artifacts/environment-setup/automation'
     ```
@@ -151,15 +170,6 @@ When executing the script below, it is important to let the scripts run to compl
 
     You may be prompted to enter the name of your desired Azure Subscription. You can copy and paste the value from the list to select one.
 
-    You will also be prompted for the following information for this script:
-
-    | Prompt |
-    |--------|
-    | Enter the SQL Administrator password you used in the deployment |
-
-    ![The Azure Cloud Shell window is displayed with a sample of the output from the preceding command.](../media/bhol_sampleshelloutput.png)
-
-    Select the resource group you selected during Task 3.2. This will make sure automation runs against the correct environment you provisioned in Azure.
 
 ## Steps & Timing
 
@@ -168,4 +178,3 @@ The entire script will take a little over an hour to complete.  Major steps incl
 * Configure Synapse resources
 * Download all data sets and files into the data lake (~15 mins)
 * Execute the setup and execute the SQL pipeline (~30 mins)
-* Execute the Cosmos DB pipeline (~25 mins)
