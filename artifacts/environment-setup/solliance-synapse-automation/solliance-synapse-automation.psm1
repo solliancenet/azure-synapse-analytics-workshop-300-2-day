@@ -688,21 +688,47 @@ function Get-ASAObject {
     return $result
 }
 
-function Set-SqlAdministrator($username, $sid)
-{
+function Set-SqlAdministrator {
+
+    param(
+    [parameter(Mandatory=$true)]
+    [String]
+    $SubscriptionId,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $ResourceGroupName,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $WorkspaceName,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $TenantId,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $UserName,
+
+    [parameter(Mandatory=$true)]
+    [String]
+    $Sid
+    )
+
     $uri = "https://management.azure.com/subscriptions/$($SubscriptionId)/resourcegroups/$($ResourceGroupName)/providers/Microsoft.Synapse/workspaces/$($WorkspaceName)/administrators/activeDirectory?api-version=2019-06-01-preview";
     $method = "PUT";
     $json = @"
     {
-        "id":"/subscriptions/$($subscriptionId)/resourceGroups/$($resourceGroupName)/providers/Microsoft.Synapse/workspaces/$($workspaceName)",
+        "id":"/subscriptions/$($SubscriptionId)/resourceGroups/$($ResourceGroupName)/providers/Microsoft.Synapse/workspaces/$($WorkspaceName)",
         "type":"",
         "location":"",
         "name":"",
         "properties":{
-            "login":"$userName",
-            "sid":"$sid",
+            "login":"$UserName",
+            "sid":"$Sid",
             "administratorType":"activeDirectory",
-            "tenantId":"$tenantId"
+            "tenantId":"$TenantId"
         }
     }
 "@

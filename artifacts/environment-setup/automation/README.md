@@ -166,6 +166,8 @@ When executing the scripts below, it is important to let the scripts run to comp
     ./01-environment-setup.ps1
     ```
 
+    > Enter the resource group name when prompted.
+
     ```PowerShell
     ./07-01-environment-poc-pre-validate.ps1
     ```
