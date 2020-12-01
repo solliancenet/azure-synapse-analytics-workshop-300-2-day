@@ -78,13 +78,12 @@ if($IsCloudLabs){
 
 Write-Information "Using $resourceGroupName";
 
-$uniqueId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
+$uniqueId = (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
 $subscriptionId = (Get-AzContext).Subscription.Id
 $tenantId = (Get-AzContext).Tenant.Id
 $global:logindomain = (Get-AzContext).Tenant.Id;
 
 $workspaceName = "asaworkspace$($uniqueId)"
-print $workspaceName
 $dataLakeAccountName = "asadatalake$($uniqueId)"
 $blobStorageAccountName = "asastore$($uniqueId)"
 $keyVaultName = "asakeyvault$($uniqueId)"
