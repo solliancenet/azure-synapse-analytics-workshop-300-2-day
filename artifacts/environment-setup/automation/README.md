@@ -58,12 +58,6 @@
     }
     ```
 
-* Install `Az.CosmosDB` module
-
-    ```powershell
-    Install-Module -Name Az.CosmosDB -AllowClobber
-    ```
-
 * Install `sqlserver` module
 
     ```powershell
