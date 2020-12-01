@@ -131,8 +131,9 @@ Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $key
 
 #remove need to ask for the password in script.
 $sqlPasswordSecret = Get-AzKeyVaultSecret -VaultName $keyVaultName -Name "SqlPassword"
-$global:sqlPassword = $sqlPasswordSecret.SecretValue | ConvertFrom-SecureString -AsPlainText
-Write-Information "SQL Password: " + $sqlPassword
+$secretValueTest = $(Get-AzKeyVaultSecret -VaultName $keyVaultName -Name "SqlPassword").SecretValueText
+Write-Information "Secret Value (test): " + $secretValueTest
+$global:sqlPassword = $sqlPasswordSecret.SecretValue #| ConvertFrom-SecureString -AsPlainText
 
 Write-Information "Create SQL-USER-ASA Key Vault Secret"
 $secretValue = ConvertTo-SecureString $sqlPassword -AsPlainText -Force
