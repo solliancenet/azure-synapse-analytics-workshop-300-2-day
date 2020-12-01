@@ -24,8 +24,7 @@
     "sqlComputeName": "SQLPool01",
     "sparkComputeName": "SparkPool01",
     "computeSubnetId": "",
-    "sqlServerSKU": "DW500c",
-    "storageBlobDataContributorRoleID": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
+    "sqlServerSKU": "DW300c",
     "storageBlobDataOwnerRoleID": "b7e6dc6d-f1e8-4753-8033-0f276bb0955b",
     "defaultDataLakeStorageAccountUrl": "[concat('https://', variables('adlsStorageAccountName'), '.dfs.core.windows.net')]",
     "sparkAutoScaleEnabled": "true",
@@ -42,8 +41,7 @@
     "keyVaultName": "[concat('asakeyvault', parameters('uniqueSuffix'))]",
     "blobStorageAccountName": "[concat('asastore', parameters('uniqueSuffix'))]",
     "applicationInsightsName": "[concat('asaappinsights', parameters('uniqueSuffix'))]",
-    "amlWorkspaceName": "[concat('amlworkspace', parameters('uniqueSuffix'))]",
-    "cosmosDbAccountName": "[concat('asacosmosdb', parameters('uniqueSuffix'))]"
+    "amlWorkspaceName": "[concat('amlworkspace', parameters('uniqueSuffix'))]"
   },
   "resources": [
     {

@@ -109,7 +109,8 @@ $AzureSQLPassword="..."
 * Run `Set-ExecutionPolicy Unrestricted`.
 * Execute `Connect-AzAccount` and sign in to the ODL user account when prompted.
 * Execute `.\artifacts\environment-setup\automation\01-environment-setup.ps1`.
-* Execute `.\artifacts\environment-setup\automation\03-environment-validate.ps1`.
+* Execute `.\artifacts\environment-setup\automation\07-01-environment-poc-pre-validate.ps1`.
+* Execute `.\artifacts\environment-setup\automation\07-02-environment-poc-validate.ps1`.
 
 ## Path #2 (Cloud Shell)
 
@@ -149,9 +150,9 @@ $AzureSQLPassword="..."
 
    ![The JSON result showing the subscription details.](../media/shell-login-result.png)
 
-### Task 3: Run environment setup PowerShell script
+### Task 3: Run environment setup and validation PowerShell scripts
 
-When executing the script below, it is important to let the scripts run to completion. Some tasks may take longer than others to run. When a script completes execution, you will be returned to a command prompt. The total runtime of all steps in this task will take approximately 60 minutes.
+When executing the scripts below, it is important to let the scripts run to completion. Some tasks may take longer than others to run. When a script completes execution, you will be returned to a command prompt. The total runtime of all steps in this task will take approximately 60 minutes.
 
 1. In the Cloud Shell, change the current directory to the **automation** folder of the cloned repository by executing the following:
 
@@ -161,15 +162,21 @@ When executing the script below, it is important to let the scripts run to compl
     cd './synapse-ws-L400/artifacts/environment-setup/automation'
     ```
 
-2. Execute the **01-environment-setup.ps1** script by executing the following command:
+2. Execute the environment setup and validation scripts by executing the following commands:
 
     ```PowerShell
     ./01-environment-setup.ps1
-    ./03-environment-validate.ps1
+    ```
+
+    ```PowerShell
+    ./07-01-environment-poc-pre-validate.ps1
+    ```
+
+    ```PowerShell
+    ./07-02-environment-poc-validate.ps1
     ```
 
     You may be prompted to enter the name of your desired Azure Subscription. You can copy and paste the value from the list to select one.
-
 
 ## Steps & Timing
 

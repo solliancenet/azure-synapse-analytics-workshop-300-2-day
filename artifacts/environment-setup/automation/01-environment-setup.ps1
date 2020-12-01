@@ -213,11 +213,9 @@ if ($download)
 {
         Write-Information "Copying single files from the public data account..."
         $singleFiles = @{
-                customer_info = "wwi-02/customer-info/customerinfo.csv"
                 products = "wwi-02/data-generators/generator-product/generator-product.csv"
                 dates = "wwi-02/data-generators/generator-date.csv"
                 customer = "wwi-02/data-generators/generator-customer.csv"
-                onnx = "wwi-02/ml/onnx-hex/product_seasonality_classifier.onnx.hex"
         }
 
         foreach ($singleFile in $singleFiles.Keys) {
@@ -230,10 +228,12 @@ if ($download)
         Write-Information "Copying sample sales raw data directories from the public data account..."
 
         $dataDirectories = @{
-                salesmall = "wwi-02,wwi-02/sale-small/"
-                analytics = "wwi-02,wwi-02/campaign-analytics/"
-                factsale = "wwi-02,wwi-02/sale-csv/"
-                security = "wwi-02,wwi-02-reduced/security/"
+                salesmall2014 = "wwi-02,wwi-02/sale-small/Year=2014"
+                salesmall2015 = "wwi-02,wwi-02/sale-small/Year=2015"
+                salesmall2016 = "wwi-02,wwi-02/sale-small/Year=2016"
+                salesmall2017 = "wwi-02,wwi-02/sale-small/Year=2017"
+                salesmall2018 = "wwi-02,wwi-02/sale-small/Year=2018"
+                salesmall2019 = "wwi-02,wwi-02/sale-small/Year=2019"
                 salespoc = "wwi-02,wwi-02/sale-poc/"
         }
 
