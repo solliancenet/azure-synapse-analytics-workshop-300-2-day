@@ -40,8 +40,7 @@
     "packagesRequirementsContent": "xgboost==1.0.2\nonnxruntime==1.0.0\nwerkzeug==0.16.1\nnimbusml==1.7.1\nruamel.yaml==0.16.9\nazureml-train-automl-runtime==1.6.0\nscikit-learn==0.20.3\nnumpy==1.16.2\npandas==0.23.4\nscipy==1.4.1\n",
     "keyVaultName": "[concat('asakeyvault', parameters('uniqueSuffix'))]",
     "blobStorageAccountName": "[concat('asastore', parameters('uniqueSuffix'))]",
-    "applicationInsightsName": "[concat('asaappinsights', parameters('uniqueSuffix'))]",
-    "amlWorkspaceName": "[concat('amlworkspace', parameters('uniqueSuffix'))]"
+    "applicationInsightsName": "[concat('asaappinsights', parameters('uniqueSuffix'))]"
   },
   "resources": [
     {
@@ -309,30 +308,6 @@
       "kind": "web",
       "properties": {
         "Application_Type": "web"
-      }
-    },
-    {
-      "type": "Microsoft.MachineLearningServices/workspaces",
-      "apiVersion": "2019-11-01",
-      "name": "[variables('amlWorkspaceName')]",
-      "location": "[variables('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('blobStorageAccountName'))]",
-        "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
-        "[resourceId('Microsoft.Insights/components', variables('applicationInsightsName'))]"
-      ],
-      "sku": {
-        "tier": "Enterprise",
-        "name": "Enterprise"
-      },
-      "identity": {
-        "type": "systemAssigned"
-      },
-      "properties": {
-        "friendlyName": "[variables('amlWorkspaceName')]",
-        "keyVault": "[resourceId('Microsoft.KeyVault/vaults',variables('keyVaultName'))]",
-        "applicationInsights": "[resourceId('Microsoft.Insights/components',variables('applicationInsightsName'))]",
-        "storageAccount": "[resourceId('Microsoft.Storage/storageAccounts/',variables('blobStorageAccountName'))]"
       }
     },
     {
