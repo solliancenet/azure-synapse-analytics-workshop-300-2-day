@@ -127,7 +127,7 @@ rm .\AzureCLI.msi
 Install-Module -Name SqlServer
 
 # Template deployment
-$resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*-L400*" }).ResourceGroupName
+$resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*-L300*" }).ResourceGroupName
 $deploymentId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
 
 $url = "https://raw.githubusercontent.com/solliancenet/azure-synapse-analytics-workshop-400/master/artifacts/environment-setup/spektra/deploy.parameters.post.json"
@@ -152,9 +152,9 @@ Import-Module Az.CosmosDB
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
 
 #download the git repo...
-git clone https://github.com/solliancenet/azure-synapse-analytics-workshop-400.git synapse-ws-L400
+git clone https://github.com/solliancenet/azure-synapse-analytics-workshop-400.git synapse-ws-L300
 
-cd './synapse-ws-L400/artifacts/environment-setup/automation'
+cd './synapse-ws-L300/artifacts/environment-setup/automation'
 
 ./01-environment-setup.ps1
 ./03-environment-validation.ps1

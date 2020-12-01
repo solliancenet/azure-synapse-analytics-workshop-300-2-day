@@ -16,7 +16,7 @@
 
 4. Select the **Create** button on the **Resource group** overview page.
 
-5. On the **Create a resource group** screen, select your desired Subscription and Region. For Resource group, enter **Synapse-WS-L400**, then select the **Review + Create** button.
+5. On the **Create a resource group** screen, select your desired Subscription and Region. For Resource group, enter **Synapse-WS-L300**, then select the **Review + Create** button.
 
     ![The Create a resource group form is displayed populated with Synapse-MCW as the resource group name.](../media/bhol_resourcegroupform.png)
 
@@ -157,9 +157,7 @@ When executing the scripts below, it is important to let the scripts run to comp
 1. In the Cloud Shell, change the current directory to the **automation** folder of the cloned repository by executing the following:
 
     ```PowerShell
-    git clone https://github.com/solliancenet/azure-synapse-analytics-workshop-300.git synapse-ws-L300
-
-    cd './synapse-ws-L400/artifacts/environment-setup/automation'
+    cd './synapse-ws-L300/artifacts/environment-setup/automation'
     ```
 
 2. Execute the environment setup and validation scripts by executing the following commands:
