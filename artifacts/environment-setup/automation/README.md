@@ -106,25 +106,39 @@
     >
     > The `AzureSQLPassword` value is the value passed to the `sqlAdministratorLoginPassword` parameter when running the `01-asa-workspace-core.json` ARM template. You can find this value by looking at the `SQL-USER_ASA` Key Vault secret.
 
-3. Run the following from the PowerShell prompt:
+3. Change the PowerShell directory by running the following from the PowerShell prompt:
 
     ```PowerShell
-    cd c:\LabFiles
+    cd C:\LabFiles
+    ```
 
+4. Next, clone the workshop's GitHub repo by executing the following:
+
+    ```PowerShell
     git clone https://github.com/solliancenet/azure-synapse-analytics-workshop-300-2-day.git synapse-ws-L300
     ```
 
-* Run `Set-ExecutionPolicy Unrestricted`.
-* Change the current directory to the **automation** folder of the cloned repository by executing the following:
+5. Run `Set-ExecutionPolicy Unrestricted`.
+
+6. Change the current directory to the **automation** folder of the cloned repository by executing the following:
 
     ```PowerShell
     cd 'synapse-ws-L300\artifacts\environment-setup\automation'
     ```
 
-* Execute `Connect-AzAccount` and sign in to the ODL user account when prompted.
-* Execute `./01-environment-setup.ps1`
-* Execute `.\artifacts\environment-setup\automation\07-01-environment-poc-pre-validate.ps1`
-* Execute `.\artifacts\environment-setup\automation\07-02-environment-poc-validate.ps1`
+7. Execute `Connect-AzAccount` and sign in to the ODL user account when prompted.
+
+8. Execute `./01-environment-setup.ps1`
+
+9. Change the current directory to the **LabFiles** folder of the cloned repository by executing the following:
+
+    ```PowerShell
+    cd C:\LabFiles
+    ```
+
+10. Execute `.\artifacts\environment-setup\automation\07-01-environment-poc-pre-validate.ps1`
+
+11. Execute `.\artifacts\environment-setup\automation\07-02-environment-poc-validate.ps1`
 
 ## Path #2 (Cloud Shell)
 
