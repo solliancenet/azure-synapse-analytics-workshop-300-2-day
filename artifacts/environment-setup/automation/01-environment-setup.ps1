@@ -244,7 +244,7 @@ if ($download)
 
                 $path = $vals[0];
 
-                $destination = $dataLakeStorageBlobUrl + $path + $destinationSasKey
+                $destination = $dataLakeStorageBlobUrl + $source + $destinationSasKey
                 Write-Information "Copying directory $($source) to $($destination)"
                 & $azCopyCommand copy $source $destination --recursive=true
         }

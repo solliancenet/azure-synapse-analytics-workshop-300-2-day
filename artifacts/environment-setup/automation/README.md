@@ -43,10 +43,13 @@
 
 ## Path 1: Local PowerShell
 
-### Task 1: Pre-requisites
+### Task 1: Install pre-requisites
 
-* Windows PowerShell
-* Azure PowerShell
+1. Install [Windows PowerShell 7](https://docs.microsoft.com/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7)
+
+    > **Note**: Some of the commands used within the scripts are dependent on PowerShell 7, so you must install this before moving on to the next step.
+
+2. Open Windows PowerShell 7 (x64) and run the following to install the Azure (`az`) PowerShell cmdlets.
 
     ```powershell
     if (Get-Module -Name AzureRM -ListAvailable) {
@@ -58,44 +61,55 @@
     }
     ```
 
-* Install `sqlserver` module
+3. Install the `sqlserver` module
 
     ```powershell
     Install-Module -Name SqlServer -AllowClobber
     ```
 
-* Install Azure CLI
+4. Install the Azure CLI
 
     ```powershell
     Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
     ```
 
-* Install VC Redist: <https://aka.ms/vs/15/release/vc_redist.x64.exe>
-* Install MS ODBC Driver 17 for SQL Server: <https://www.microsoft.com/download/confirmation.aspx?id=56567>
-* Install SQL CMD x64: <https://go.microsoft.com/fwlink/?linkid=2082790>
-* Install Microsoft Online Services Sign-In Assistant for IT Professionals RTW: <https://www.microsoft.com/download/details.aspx?id=41950>
-* Install [Git client](https://git-scm.com/downloads)
-* [Windows PowerShell](https://docs.microsoft.com/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7)
+5. Install VC Redist: <https://aka.ms/vs/15/release/vc_redist.x64.exe>.
 
-Create the following file: **C:\LabFiles\AzureCreds.ps1**
+6. Install MS ODBC Driver 17 for SQL Server: <https://www.microsoft.com/download/confirmation.aspx?id=56567>.
 
-```powershell
-$AzureUserName="odl_user_NNNNNN@msazurelabs.onmicrosoft.com"
-$AzurePassword="..."
-$TokenGeneratorClientId="1950a258-227b-4e31-a9cf-717495945fc2"
-$AzureSQLPassword="..."
-```
+7. Install SQL CMD x64: <https://go.microsoft.com/fwlink/?linkid=2082790>.
 
-> The `AzureSQLPassword` value is the value passed to the `sqlAdministratorLoginPassword` parameter when running the `01-asa-workspace-core.json` ARM template. You can find this value by looking at the `SQL-USER_ASA` Key Vault secret.
+8. Install Microsoft Online Services Sign-In Assistant for IT Professionals RTW: <https://www.microsoft.com/download/details.aspx?id=41950>.
+
+9. Install the [Git client](https://git-scm.com/downloads).
 
 ### Task 2: Execute setup scripts
 
 1. From your machine, open a PowerShell Window as an administrator, run the following command to download the artifacts
 
     ```powershell
-    mkdir c:\labfiles
+    mkdir c:\LabFiles
+    ```
 
-    cd c:\labfiles
+2. Create the following file and save it to **C:\LabFiles\AzureCreds.ps1**.
+
+    ```powershell
+    $AzureUserName="odl_user_NNNNNN@msazurelabs.onmicrosoft.com"
+    $AzurePassword="..."
+    $TokenGeneratorClientId="1950a258-227b-4e31-a9cf-717495945fc2"
+    $AzureSQLPassword="..."
+    ```
+
+    > **Note**
+    >
+    > The `AzurePassword` value is the password associated with the old_user_NNNNNN account associated with the environment you were provided.
+    >
+    > The `AzureSQLPassword` value is the value passed to the `sqlAdministratorLoginPassword` parameter when running the `01-asa-workspace-core.json` ARM template. You can find this value by looking at the `SQL-USER_ASA` Key Vault secret.
+
+3. Run the following from the PowerShell prompt:
+
+    ```PowerShell
+    cd c:\LabFiles
 
     git clone https://github.com/solliancenet/azure-synapse-analytics-workshop-300-2-day.git synapse-ws-L300
     ```
@@ -108,11 +122,13 @@ $AzureSQLPassword="..."
     ```
 
 * Execute `Connect-AzAccount` and sign in to the ODL user account when prompted.
-* Execute `./01-environment-setup.ps1`.
-* Execute `.\artifacts\environment-setup\automation\07-01-environment-poc-pre-validate.ps1`.
-* Execute `.\artifacts\environment-setup\automation\07-02-environment-poc-validate.ps1`.
+* Execute `./01-environment-setup.ps1`
+* Execute `.\artifacts\environment-setup\automation\07-01-environment-poc-pre-validate.ps1`
+* Execute `.\artifacts\environment-setup\automation\07-02-environment-poc-validate.ps1`
 
 ## Path #2 (Cloud Shell)
+
+> **Important**: Due to the amount of time required to run the environment setup scripts, you will very likely time out on the Cloud Shell before the script completes.
 
 ### Task 1: Download artifacts
 
