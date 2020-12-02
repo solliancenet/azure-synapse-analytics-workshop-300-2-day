@@ -153,7 +153,7 @@ $dataLakeItems = [ordered]@{
 
 Write-Information "Checking datalake account $($dataLakeAccountName)..."
 $dataLakeAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $dataLakeAccountName
-if (null -eq $dataLakeAccount) {
+if ($null -eq $dataLakeAccount) {
         Write-Warning "    The datalake account $($dataLakeAccountName) was not found"
         $overallStateIsValid = $false
 } else {
@@ -163,7 +163,7 @@ if (null -eq $dataLakeAccount) {
 
                 Write-Information "Checking data lake $($dataLakeItems[$dataLakeItemName]) $($dataLakeItemName)..."
                 $dataLakeItem = Get-AzDataLakeGen2Item -Context $dataLakeAccount.Context -FileSystem "wwi-02" -Path $dataLakeItemName
-                if (null -eq $dataLakeItem) {
+                if ($null -eq $dataLakeItem) {
                         Write-Warning "    The data lake $($dataLakeItems[$dataLakeItemName]) $($dataLakeItemName) was not found"
                         $overallStateIsValid = $false
                 } else {
