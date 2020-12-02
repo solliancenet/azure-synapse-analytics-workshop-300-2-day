@@ -1,5 +1,5 @@
 Remove-Module solliance-synapse-automation
-Import-Module ".\artifacts\environment-setup\solliance-synapse-automation"
+Import-Module "..\solliance-synapse-automation"
 
 $InformationPreference = "Continue"
 
@@ -23,22 +23,11 @@ Connect-AzAccount -Credential $cred | Out-Null
 $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*L300*" }).ResourceGroupName
 $uniqueId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
 $subscriptionId = (Get-AzContext).Subscription.Id
-$tenantId = (Get-AzContext).Tenant.Id
 
-$templatesPath = ".\artifacts\environment-setup\templates"
-$datasetsPath = ".\artifacts\environment-setup\datasets"
-$pipelinesPath = ".\artifacts\environment-setup\pipelines"
-$sqlScriptsPath = ".\artifacts\environment-setup\sql"
 $workspaceName = "asaworkspace$($uniqueId)"
-$dataLakeAccountName = "asadatalake$($uniqueId)"
-$blobStorageAccountName = "asastore$($uniqueId)"
-$keyVaultName = "asakeyvault$($uniqueId)"
-$keyVaultSQLUserSecretName = "SQL-USER-ASA"
 $sqlPoolName = "SQLPool01"
-$integrationRuntimeName = "AzureIntegrationRuntime01"
 $global:sqlEndpoint = "$($workspaceName).sql.azuresynapse.net"
 $global:sqlUser = "asa.sql.admin"
-
 
 $ropcBodyCore = "client_id=$($clientId)&username=$($userName)&password=$($password)&grant_type=password"
 $global:ropcBodySynapse = "$($ropcBodyCore)&scope=https://dev.azuresynapse.net/.default"
@@ -98,10 +87,8 @@ FROM
                 T.schema_id = S.schema_id
 "@
 
-#$result = Invoke-SqlQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery $query
 $result = Invoke-SqlCmd -Query $query -ServerInstance $sqlEndpoint -Database $sqlPoolName -Username $sqlUser -Password $sqlPassword
 
-#foreach ($dataRow in $result.data) {
 foreach ($dataRow in $result) {
         $schemaName = $dataRow[0]
         $tableName = $dataRow[1]
@@ -140,18 +127,9 @@ foreach ($dataRow in $result) {
         }
 }
 
-# $tables contains the current status of the necessary tables
-
 if ($overallStateIsValid -eq $true) {
     Write-Information "Validation Passed"
-
-    #Write-Information "Pause the $($sqlPoolName) SQL pool to DW500c after PoC import."
-
-    #Set-SqlPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action pause
-    #Wait-ForSQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -TargetStatus Paused
 }
 else {
     Write-Warning "Validation Failed - see log output"
 }
-
-

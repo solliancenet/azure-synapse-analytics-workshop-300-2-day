@@ -1,5 +1,5 @@
 Remove-Module solliance-synapse-automation
-Import-Module ".\artifacts\environment-setup\solliance-synapse-automation"
+Import-Module "..\solliance-synapse-automation"
 
 $InformationPreference = "Continue"
 
@@ -24,19 +24,10 @@ Connect-AzAccount -Credential $cred | Out-Null
 $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*L300*" }).ResourceGroupName
 $uniqueId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
 $subscriptionId = (Get-AzContext).Subscription.Id
-$tenantId = (Get-AzContext).Tenant.Id
 
-$templatesPath = ".\artifacts\environment-setup\templates"
-$datasetsPath = ".\artifacts\environment-setup\datasets"
-$pipelinesPath = ".\artifacts\environment-setup\pipelines"
-$sqlScriptsPath = ".\artifacts\environment-setup\sql"
 $workspaceName = "asaworkspace$($uniqueId)"
 $dataLakeAccountName = "asadatalake$($uniqueId)"
-$blobStorageAccountName = "asastore$($uniqueId)"
-$keyVaultName = "asakeyvault$($uniqueId)"
-$keyVaultSQLUserSecretName = "SQL-USER-ASA"
 $sqlPoolName = "SQLPool01"
-$integrationRuntimeName = "AzureIntegrationRuntime01"
 $global:sqlEndpoint = "$($workspaceName).sql.azuresynapse.net"
 $global:sqlUser = "asa.sql.admin"
 
@@ -84,10 +75,8 @@ FROM
                 T.schema_id = S.schema_id
 "@
 
-#$result = Invoke-SqlQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery $query
 $result = Invoke-SqlCmd -Query $query -ServerInstance $sqlEndpoint -Database $sqlPoolName -Username $sqlUser -Password $sqlPassword
 
-#foreach ($dataRow in $result.data) {
 foreach ($dataRow in $result) {
         $schemaName = $dataRow[0]
         $tableName = $dataRow[1]
@@ -127,9 +116,6 @@ foreach ($dataRow in $result) {
         }
 }
 
-# $tables contains the current status of the necessary tables
-
-
 $dataLakeItems = [ordered]@{
         "data-generators\generator-customer.csv" = "file path"
         "sale-poc\sale-20170501.csv" = "file path"
@@ -165,10 +151,9 @@ $dataLakeItems = [ordered]@{
         "sale-poc\sale-20170531.csv" = "file path"
 }
 
-
 Write-Information "Checking datalake account $($dataLakeAccountName)..."
 $dataLakeAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $dataLakeAccountName
-if ($dataLakeAccount -eq $null) {
+if (null -eq $dataLakeAccount) {
         Write-Warning "    The datalake account $($dataLakeAccountName) was not found"
         $overallStateIsValid = $false
 } else {
@@ -178,7 +163,7 @@ if ($dataLakeAccount -eq $null) {
 
                 Write-Information "Checking data lake $($dataLakeItems[$dataLakeItemName]) $($dataLakeItemName)..."
                 $dataLakeItem = Get-AzDataLakeGen2Item -Context $dataLakeAccount.Context -FileSystem "wwi-02" -Path $dataLakeItemName
-                if ($dataLakeItem -eq $null) {
+                if (null -eq $dataLakeItem) {
                         Write-Warning "    The data lake $($dataLakeItems[$dataLakeItemName]) $($dataLakeItemName) was not found"
                         $overallStateIsValid = $false
                 } else {
@@ -188,12 +173,9 @@ if ($dataLakeAccount -eq $null) {
         }  
 }
 
-
 if ($overallStateIsValid -eq $true) {
     Write-Information "Validation Passed"
 }
 else {
     Write-Warning "Validation Failed - see log output"
 }
-
-
