@@ -1,7 +1,5 @@
 function AutoPauseAllPS()
 {
-    $servers = Get-AzSqlServer
-
     foreach ($s in $server)
     {
         $dbs = Get-AzSqlDatabase -server $server;
@@ -68,8 +66,6 @@ function Confirm-HttpRedirect($uri)
     #[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Ssl3 -bor [System.Net.SecurityProtocolType]::Tls;
 
     $global:httpCode = -1;
-    
-    $response = "";            
 
     try
     {
@@ -623,7 +619,7 @@ function Wait-ForOperation {
     Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method GET -Headers @{ Authorization="Bearer $synapseToken" }
 
-    while ($result.status -ne $null) {
+    while ($null -ne $result.status) {
         
         if ($result.status -eq "Failed") {
             throw $result.error
@@ -998,12 +994,12 @@ function CallJavascript($message, $secret)
 
     $inputs = $ie.Document.body.getElementsByTagName("input");
 
-    $msgInput = $inputs | where {$_.name -eq "msg"}
-    $secretInput = $inputs | where {$_.name -eq "secret"}
-    $outputInput = $inputs | where {$_.name -eq "output"}
+    $msgInput = $inputs | Where-Object {$_.name -eq "msg"}
+    $secretInput = $inputs | Where-Object {$_.name -eq "secret"}
+    $outputInput = $inputs | Where-Object {$_.name -eq "output"}
 
     $buttons = $ie.Document.body.getElementsByTagName("button");
-    $btnGo = $buttons | where {$_.name -eq "btnGo"}
+    $btnGo = $buttons | Where-Object {$_.name -eq "btnGo"}
  
     $msgInput.value = $message.replace("`r","\r").replace("`n","\n");
     $secretInput.value = $secret;
@@ -1548,16 +1544,6 @@ function Set-SynapseRole {
     Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method $method -Body $body -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     return $result
-}
-
-function Update-Token2()
-{
-    $context = Get-AzureRmContext;
-    
-    $global:synapseToken = [Microsoft.Azure.Commands.Common.Authentication.AzureSession]::Instance.AuthenticationFactory.Authenticate($context.Account, $context.Environment, $context.Tenant.Id, $null, "Never", $null, "https://dev.azuresynapse.net").AccessToken
-    $global:synapseSQLToken = [Microsoft.Azure.Commands.Common.Authentication.AzureSession]::Instance.AuthenticationFactory.Authenticate($context.Account, $context.Environment, $context.Tenant.Id, $null, "Never", $null, "https://sql.azuresynapse.net").AccessToken
-    $global:managementToken = [Microsoft.Azure.Commands.Common.Authentication.AzureSession]::Instance.AuthenticationFactory.Authenticate($context.Account, $context.Environment, $context.Tenant.Id, $null, "Never", $null, "https://management.azure.com").AccessToken
-    $global:powerbitoken = [Microsoft.Azure.Commands.Common.Authentication.AzureSession]::Instance.AuthenticationFactory.Authenticate($context.Account, $context.Environment, $context.Tenant.Id, $null, "Never", $null, "https://analysis.windows.net/powerbi/api").AccessToken
 }
 
 #this will force refresh of all tokens
