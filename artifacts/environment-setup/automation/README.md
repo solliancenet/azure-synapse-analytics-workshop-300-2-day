@@ -101,8 +101,14 @@ $AzureSQLPassword="..."
     ```
 
 * Run `Set-ExecutionPolicy Unrestricted`.
+* Change the current directory to the **automation** folder of the cloned repository by executing the following:
+
+    ```PowerShell
+    cd 'synapse-ws-L300\artifacts\environment-setup\automation'
+    ```
+
 * Execute `Connect-AzAccount` and sign in to the ODL user account when prompted.
-* Execute `.\artifacts\environment-setup\automation\01-environment-setup.ps1`.
+* Execute `./01-environment-setup.ps1`.
 * Execute `.\artifacts\environment-setup\automation\07-01-environment-poc-pre-validate.ps1`.
 * Execute `.\artifacts\environment-setup\automation\07-02-environment-poc-validate.ps1`.
 
