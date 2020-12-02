@@ -76,7 +76,7 @@ $largeIntegrationRuntimeName = "AzureLargeComputeOptimizedIntegrationRuntime"
 Write-Information "Removing $($largeIntegrationRuntimeName) integration runtime..."
 $result = Get-IntegrationRuntime -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -Name $largeIntegrationRuntimeName
 if ($result) {
-        $result = Delete-IntegrationRuntime -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -Name $largeIntegrationRuntimeName
+        $result = Remove-IntegrationRuntime -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -Name $largeIntegrationRuntimeName
         Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 }
 
@@ -111,12 +111,12 @@ $asaArtifacts2 = [ordered]@{
 
 foreach ($asaArtifactName in $asaArtifacts.Keys) {
         Write-Information "Deleting $($asaArtifactName) in $($asaArtifacts[$asaArtifactName])"
-        $result = Delete-ASAObject -WorkspaceName $workspaceName -Category $asaArtifacts[$asaArtifactName] -Name $asaArtifactName
+        $result = Remove-ASAObject -WorkspaceName $workspaceName -Category $asaArtifacts[$asaArtifactName] -Name $asaArtifactName
         Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 }
 
 foreach ($asaArtifactName in $asaArtifacts2.Keys) {
         Write-Information "Deleting $($asaArtifactName) in $($asaArtifacts2[$asaArtifactName])"
-        $result = Delete-ASAObject -WorkspaceName $workspaceName -Category $asaArtifacts2[$asaArtifactName] -Name $asaArtifactName
+        $result = Remove-ASAObject -WorkspaceName $workspaceName -Category $asaArtifacts2[$asaArtifactName] -Name $asaArtifactName
         Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 }

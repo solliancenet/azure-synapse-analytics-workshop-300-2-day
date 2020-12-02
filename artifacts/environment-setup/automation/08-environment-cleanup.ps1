@@ -76,7 +76,7 @@ $largeIntegrationRuntimeName = "AzureLargeComputeOptimizedIntegrationRuntime"
 Write-Information "Removing $($largeIntegrationRuntimeName) integration runtime..."
 $result = Get-IntegrationRuntime -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -Name $largeIntegrationRuntimeName
 if ($result) {
-        $result = Delete-IntegrationRuntime -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -Name $largeIntegrationRuntimeName
+        $result = Remove-IntegrationRuntime -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -Name $largeIntegrationRuntimeName
         Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 }
 
@@ -111,13 +111,13 @@ $asaArtifacts2 = [ordered]@{
 
 foreach ($asaArtifactName in $asaArtifacts.Keys) {
         Write-Information "Deleting $($asaArtifactName) in $($asaArtifacts[$asaArtifactName])"
-        $result = Delete-ASAObject -WorkspaceName $workspaceName -Category $asaArtifacts[$asaArtifactName] -Name $asaArtifactName
+        $result = Remove-ASAObject -WorkspaceName $workspaceName -Category $asaArtifacts[$asaArtifactName] -Name $asaArtifactName
         Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 }
 
 foreach ($asaArtifactName in $asaArtifacts2.Keys) {
         Write-Information "Deleting $($asaArtifactName) in $($asaArtifacts2[$asaArtifactName])"
-        $result = Delete-ASAObject -WorkspaceName $workspaceName -Category $asaArtifacts2[$asaArtifactName] -Name $asaArtifactName
+        $result = Remove-ASAObject -WorkspaceName $workspaceName -Category $asaArtifacts2[$asaArtifactName] -Name $asaArtifactName
         Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 }
 
@@ -127,7 +127,7 @@ foreach ($asaArtifactName in $asaArtifacts2.Keys) {
 
 
 Write-Information "Counting Cosmos DB item in database $($cosmosDbDatabase), container $($cosmosDbContainer)"
-$documentCount = Count-CosmosDbDocuments -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -CosmosDbAccountName $cosmosDbAccountName `
+$documentCount = Get-CosmosDbDocumentCount -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -CosmosDbAccountName $cosmosDbAccountName `
                 -CosmosDbDatabase $cosmosDbDatabase -CosmosDbContainer $cosmosDbContainer
 
 if ($documentCount -ne 100000) {
@@ -168,27 +168,27 @@ Set-AzCosmosDBSqlContainer -ResourceGroupName $resourceGroupName `
 
 $name = "wwi02_online_user_profiles_01_adal"
 Write-Information "Create dataset $($name)"
-$result = Create-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $name -LinkedServiceName $dataLakeAccountName
+$result = New-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $name -LinkedServiceName $dataLakeAccountName
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 Write-Information "Create Cosmos DB linked service $($cosmosDbAccountName)"
-$cosmosDbAccountKey = List-CosmosDBKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $cosmosDbAccountName
-$result = Create-CosmosDBLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $cosmosDbAccountName -Database $cosmosDbDatabase -Key $cosmosDbAccountKey
+$cosmosDbAccountKey = Get-CosmosDbKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $cosmosDbAccountName
+$result = New-CosmosDbLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $cosmosDbAccountName -Database $cosmosDbDatabase -Key $cosmosDbAccountKey
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 $name = "customer_profile_cosmosdb"
 Write-Information "Create dataset $($name)"
-$result = Create-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $name -LinkedServiceName $cosmosDbAccountName
+$result = New-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $name -LinkedServiceName $cosmosDbAccountName
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 $name = "Setup - Import User Profile Data into Cosmos DB"
 $fileName = "import_customer_profiles_into_cosmosdb"
 Write-Information "Create pipeline $($name)"
-$result = Create-Pipeline -PipelinesPath $pipelinesPath -WorkspaceName $workspaceName -Name $name -FileName $fileName
+$result = New-Pipeline -PipelinesPath $pipelinesPath -WorkspaceName $workspaceName -Name $name -FileName $fileName
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 Write-Information "Running pipeline $($name)"
-$pipelineRunResult = Run-Pipeline -WorkspaceName $workspaceName -Name $name
+$pipelineRunResult = Start-Pipeline -WorkspaceName $workspaceName -Name $name
 $result = Wait-ForPipelineRun -WorkspaceName $workspaceName -RunId $pipelineRunResult.runId
 $result
 
@@ -213,22 +213,22 @@ Set-AzCosmosDBSqlContainer -ResourceGroupName $resourceGroupName `
 
 $name = "Setup - Import User Profile Data into Cosmos DB"
 Write-Information "Delete pipeline $($name)"
-$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "pipelines" -Name $name
+$result = Remove-ASAObject -WorkspaceName $workspaceName -Category "pipelines" -Name $name
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 $name = "customer_profile_cosmosdb"
 Write-Information "Delete dataset $($name)"
-$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $name
+$result = Remove-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $name
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 $name = "wwi02_online_user_profiles_01_adal"
 Write-Information "Delete dataset $($name)"
-$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $name
+$result = Remove-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $name
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 $name = $cosmosDbAccountName
 Write-Information "Delete linked service $($name)"
-$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "linkedServices" -Name $name
+$result = Remove-ASAObject -WorkspaceName $workspaceName -Category "linkedServices" -Name $name
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 }
@@ -241,24 +241,24 @@ Write-Information "Start the $($sqlPoolName) SQL pool if needed."
 
 $result = Get-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName
 if ($result.properties.status -ne "Online") {
-    Control-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action resume
+    Set-SqlPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action resume
     Wait-ForSQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -TargetStatus Online
 }
 
 Write-Information "Cleanup SQL pool $($sqlPoolName)"
 
 $params = @{}
-$result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "19-cleanup-sql-pool" -Parameters $params
+$result = Invoke-SqlScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "19-cleanup-sql-pool" -Parameters $params
 $result
 
 Write-Information "Reset result set caching for SQL pool $($sqlPoolName)"
 $query = "ALTER DATABASE [$($sqlPoolName)] SET RESULT_SET_CACHING ON"
-$result = Execute-SQLQuery -WorkspaceName $workspaceName -SQLPoolName "master" -SQLQuery $query
+$result = Invoke-SqlQuery -WorkspaceName $workspaceName -SQLPoolName "master" -SQLQuery $query
 
 Write-Information "Create tables in the [wwi] schema in $($sqlPoolName)"
 
 $params = @{}
-$result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "04-create-tables-in-wwi-schema" -Parameters $params
+$result = Invoke-SqlScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "04-create-tables-in-wwi-schema" -Parameters $params
 $result
 
 
@@ -275,7 +275,7 @@ $loadingDatasets = @{
 
 foreach ($dataset in $loadingDatasets.Keys) {
         Write-Information "Creating dataset $($dataset)"
-        $result = Create-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $dataset -LinkedServiceName $loadingDatasets[$dataset]
+        $result = New-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $dataset -LinkedServiceName $loadingDatasets[$dataset]
         Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 }
 
@@ -289,23 +289,23 @@ $fileName = "load_sql_pool_from_data_lake"
 
 Write-Information "Creating pipeline $($loadingPipelineName)"
 
-$result = Create-Pipeline -PipelinesPath $pipelinesPath -WorkspaceName $workspaceName -Name $loadingPipelineName -FileName $fileName -Parameters $params
+$result = New-Pipeline -PipelinesPath $pipelinesPath -WorkspaceName $workspaceName -Name $loadingPipelineName -FileName $fileName -Parameters $params
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 Write-Information "Running pipeline $($loadingPipelineName)"
 
-$result = Run-Pipeline -WorkspaceName $workspaceName -Name $loadingPipelineName
+$result = Start-Pipeline -WorkspaceName $workspaceName -Name $loadingPipelineName
 $result = Wait-ForPipelineRun -WorkspaceName $workspaceName -RunId $result.runId
 $result
 
 Write-Information "Deleting pipeline $($loadingPipelineName)"
 
-$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "pipelines" -Name $loadingPipelineName
+$result = Remove-ASAObject -WorkspaceName $workspaceName -Category "pipelines" -Name $loadingPipelineName
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 foreach ($dataset in $loadingDatasets.Keys) {
         Write-Information "Deleting dataset $($dataset)"
-        $result = Delete-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $dataset
+        $result = Remove-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $dataset
         Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 }
 
@@ -326,6 +326,6 @@ foreach ($script in $scripts.Keys) {
         Write-Information "Starting $($script) with label $($scripts[$script])"
         
         # initiate the script and wait until it finishes
-        Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName $script -ForceReturn $true
+        Invoke-SqlScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName $script -ForceReturn $true
         Wait-ForSQLQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Label $scripts[$script] -ReferenceTime $refTime
 }

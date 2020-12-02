@@ -65,7 +65,7 @@ Write-Information "Start the $($sqlPoolName) SQL pool if needed."
 
 $result = Get-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName
 if ($result.properties.status -ne "Online") {
-    Control-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action resume
+    Set-SqlPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action resume
     Wait-ForSQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -TargetStatus Online
 }
 
@@ -73,7 +73,7 @@ if ($result.properties.status -ne "Online") {
 Write-Information "Create tables in the [wwi] schema in $($sqlPoolName)"
 
 $params = @{}
-$result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "04-create-tables-in-wwi-schema" -Parameters $params
+$result = Invoke-SqlScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "04-create-tables-in-wwi-schema" -Parameters $params
 $result
 
 
@@ -90,7 +90,7 @@ $loadingDatasets = @{
 
 foreach ($dataset in $loadingDatasets.Keys) {
         Write-Information "Creating dataset $($dataset)"
-        $result = Create-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $dataset -LinkedServiceName $loadingDatasets[$dataset]
+        $result = New-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $dataset -LinkedServiceName $loadingDatasets[$dataset]
         Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 }
 
@@ -104,23 +104,23 @@ $fileName = "load_sql_pool_from_data_lake"
 
 Write-Information "Creating pipeline $($loadingPipelineName)"
 
-$result = Create-Pipeline -PipelinesPath $pipelinesPath -WorkspaceName $workspaceName -Name $loadingPipelineName -FileName $fileName -Parameters $params
+$result = New-Pipeline -PipelinesPath $pipelinesPath -WorkspaceName $workspaceName -Name $loadingPipelineName -FileName $fileName -Parameters $params
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 Write-Information "Running pipeline $($loadingPipelineName)"
 
-$result = Run-Pipeline -WorkspaceName $workspaceName -Name $loadingPipelineName
+$result = Start-Pipeline -WorkspaceName $workspaceName -Name $loadingPipelineName
 $result = Wait-ForPipelineRun -WorkspaceName $workspaceName -RunId $result.runId
 $result
 
 Write-Information "Deleting pipeline $($loadingPipelineName)"
 
-$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "pipelines" -Name $loadingPipelineName
+$result = Remove-ASAObject -WorkspaceName $workspaceName -Category "pipelines" -Name $loadingPipelineName
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 foreach ($dataset in $loadingDatasets.Keys) {
         Write-Information "Deleting dataset $($dataset)"
-        $result = Delete-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $dataset
+        $result = Remove-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $dataset
         Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 }
 
@@ -141,6 +141,6 @@ foreach ($script in $scripts.Keys) {
         Write-Information "Starting $($script) with label $($scripts[$script])"
         
         # initiate the script and wait until it finishes
-        Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName $script -ForceReturn $true
+        Invoke-SqlScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName $script -ForceReturn $true
         Wait-ForSQLQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Label $scripts[$script] -ReferenceTime $refTime
 }

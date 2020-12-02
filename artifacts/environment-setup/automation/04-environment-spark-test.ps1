@@ -114,4 +114,4 @@ for ($i = 0; $i -lt 60; $i++) {
         Start-Sleep -Seconds 15
 }
 
-Delete-SparkNotebookSession -WorkspaceName $workspaceName -SparkPoolName $sparkPoolName -SessionId $session.id
+Remove-SparkNotebookSession -WorkspaceName $workspaceName -SparkPoolName $sparkPoolName -SessionId $session.id

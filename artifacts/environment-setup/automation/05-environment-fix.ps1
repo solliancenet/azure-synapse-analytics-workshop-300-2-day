@@ -99,7 +99,7 @@ $global:tokenTimes = [ordered]@{
 
 Write-Information "Creating Spark notebooks..."
 
-$dataLakeAccountKey = List-StorageAccountKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $dataLakeAccountName
+$dataLakeAccountKey = Get-StorageAccountKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $dataLakeAccountName
 
 $notebooks = [ordered]@{
         "Activity 05 - Model Training" = ".\artifacts\day-03"
@@ -119,7 +119,7 @@ foreach ($notebookName in $notebooks.Keys) {
         $notebookFileName = "$($notebooks[$notebookName])\$($notebookName).ipynb"
         Write-Information "Creating notebook $($notebookName) from $($notebookFileName)"
         
-        $result = Create-SparkNotebook -TemplatesPath $templatesPath -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName `
+        $result = New-SparkNotebook -TemplatesPath $templatesPath -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName `
                 -WorkspaceName $workspaceName -SparkPoolName $sparkPoolName -Name $notebookName -NotebookFileName $notebookFileName -CellParams $cellParams
         $result = Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
         $result

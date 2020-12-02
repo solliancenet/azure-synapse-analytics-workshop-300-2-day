@@ -212,7 +212,7 @@ if ($sqlPool -eq $null) {
         }
         
         $query = Get-Content -Raw -Path ".\artifacts\environment-setup\sql\18-get-sql-pool-artifacts.sql"
-        $result = Execute-SQLQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery $query
+        $result = Invoke-SqlQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery $query
         
         
         foreach ($dataRow in $result.data) {

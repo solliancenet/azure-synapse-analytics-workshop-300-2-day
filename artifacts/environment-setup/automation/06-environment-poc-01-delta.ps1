@@ -72,14 +72,14 @@ foreach($line in $lines)
 
     $result = Get-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName
     if ($result.properties.status -ne "Online") {
-        Control-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action resume
+        Set-SqlPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action resume
         Wait-ForSQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -TargetStatus Online
     }
 
     Write-Information "Create wwi_poc schema in $($sqlPoolName)"
 
     $params = @{}
-    $result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "16-create-poc-schema" -Parameters $params
+    $result = Invoke-SqlScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "16-create-poc-schema" -Parameters $params
     $result
 
     Write-Information "Create tables in wwi_poc schema in SQL pool $($sqlPoolName)"
@@ -95,7 +95,7 @@ foreach($line in $lines)
             Write-Information "Starting $($script) with label $($scripts[$script])"
             
             # initiate the script and wait until it finishes
-            Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName $script
+            Invoke-SqlScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName $script
             #Wait-ForSQLQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Label $scripts[$script] -ReferenceTime $refTime
     }
 
@@ -110,7 +110,7 @@ foreach($line in $lines)
 
     foreach ($dataset in $loadingDatasets.Keys) {
             Write-Information "Creating dataset $($dataset)"
-            $result = Create-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $dataset -LinkedServiceName $loadingDatasets[$dataset]
+            $result = New-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $dataset -LinkedServiceName $loadingDatasets[$dataset]
             Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
     }
 
@@ -124,29 +124,29 @@ foreach($line in $lines)
 
     Write-Information "Creating pipeline $($loadingPipelineName)"
 
-    $result = Create-Pipeline -PipelinesPath $pipelinesPath -WorkspaceName $workspaceName -Name $loadingPipelineName -FileName $fileName -Parameters $params
+    $result = New-Pipeline -PipelinesPath $pipelinesPath -WorkspaceName $workspaceName -Name $loadingPipelineName -FileName $fileName -Parameters $params
     Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
     Write-Information "Running pipeline $($loadingPipelineName)"
 
-    $result = Run-Pipeline -WorkspaceName $workspaceName -Name $loadingPipelineName
+    $result = Start-Pipeline -WorkspaceName $workspaceName -Name $loadingPipelineName
     $result = Wait-ForPipelineRun -WorkspaceName $workspaceName -RunId $result.runId
     $result
 
     Write-Information "Deleting pipeline $($loadingPipelineName)"
 
-    $result = Delete-ASAObject -WorkspaceName $workspaceName -Category "pipelines" -Name $loadingPipelineName
+    $result = Remove-ASAObject -WorkspaceName $workspaceName -Category "pipelines" -Name $loadingPipelineName
     Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
     foreach ($dataset in $loadingDatasets.Keys) {
             Write-Information "Deleting dataset $($dataset)"
-            $result = Delete-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $dataset
+            $result = Remove-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $dataset
             Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
     }
 
 
     #Write-Information "Pause the $($sqlPoolName) SQL pool to DW500c after PoC import."
     #
-    #Control-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action pause
+    #Set-SqlPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action pause
     #Wait-ForSQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -TargetStatus Paused
 }

@@ -61,11 +61,11 @@ foreach($line in $lines)
 
     Write-Information "Copy Public Data"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
 
     if ([System.Environment]::OSVersion.Platform -eq "Unix")
     {
-            $azCopyLink = Check-HttpRedirect "https://aka.ms/downloadazcopy-v10-linux"
+            $azCopyLink = Confirm-HttpRedirect "https://aka.ms/downloadazcopy-v10-linux"
 
             if (!$azCopyLink)
             {
@@ -82,7 +82,7 @@ foreach($line in $lines)
     }
     else
     {
-            $azCopyLink = Check-HttpRedirect "https://aka.ms/downloadazcopy-v10-windows"
+            $azCopyLink = Confirm-HttpRedirect "https://aka.ms/downloadazcopy-v10-windows"
 
             if (!$azCopyLink)
             {

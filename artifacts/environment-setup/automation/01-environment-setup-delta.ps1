@@ -127,11 +127,11 @@ $global:tokenTimes = [ordered]@{
 
 Write-Information "Copy Public Data"
 
-Ensure-ValidTokens
+Confirm-ValidTokens
 
 if ([System.Environment]::OSVersion.Platform -eq "Unix")
 {
-        $azCopyLink = Check-HttpRedirect "https://aka.ms/downloadazcopy-v10-linux"
+        $azCopyLink = Confirm-HttpRedirect "https://aka.ms/downloadazcopy-v10-linux"
 
         if (!$azCopyLink)
         {
@@ -148,7 +148,7 @@ if ([System.Environment]::OSVersion.Platform -eq "Unix")
 }
 else
 {
-        $azCopyLink = Check-HttpRedirect "https://aka.ms/downloadazcopy-v10-windows"
+        $azCopyLink = Confirm-HttpRedirect "https://aka.ms/downloadazcopy-v10-windows"
 
         if (!$azCopyLink)
         {
@@ -206,16 +206,16 @@ Write-Information "Start the $($sqlPoolName) SQL pool if needed."
 
 $result = Get-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName
 if ($result.properties.status -ne "Online") {
-    Control-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action resume
+    Set-SqlPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action resume
     Wait-ForSQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -TargetStatus Online
 }
 
 Write-Information "Create tables in the [wwi_ml] schema in $($sqlPoolName)"
 
-$dataLakeAccountKey = List-StorageAccountKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $dataLakeAccountName
+$dataLakeAccountKey = Get-StorageAccountKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $dataLakeAccountName
 $params = @{ 
         DATA_LAKE_ACCOUNT_NAME = $dataLakeAccountName  
         DATA_LAKE_ACCOUNT_KEY = $dataLakeAccountKey 
 }
-$result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "05-create-tables-in-wwi-ml-schema-delta" -Parameters $params
+$result = Invoke-SqlScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "05-create-tables-in-wwi-ml-schema-delta" -Parameters $params
 $result

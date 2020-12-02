@@ -18,7 +18,7 @@ function AutoPauseAll($subscriptionId)
     #get resource groups...
     $uri = "https://management.azure.com/subscriptions/$subscriptionId/resourceGroups?api-version=2020-06-01"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method GET -Headers @{ Authorization="Bearer $global:managementToken" } -ContentType "application/json"
 
     foreach($rg in $result.value)
@@ -57,7 +57,7 @@ function PauseSqlPool($subscriptionId, $rgName, $workspaceName, $poolName)
     return $result;
 }
 
-function Check-HttpRedirect($uri)
+function Confirm-HttpRedirect($uri)
 {
     $httpReq = [system.net.HttpWebRequest]::Create($uri)
     $httpReq.Accept = "text/html, application/xhtml+xml, */*"
@@ -113,7 +113,7 @@ function Check-HttpRedirect($uri)
     return $null;
 }
 
-function List-StorageAccountKeys {
+function Get-StorageAccountKeys {
 
     param(
     [parameter(Mandatory=$true)]
@@ -133,7 +133,7 @@ function List-StorageAccountKeys {
 
     Write-Debug "Calling endpoint $uri"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method POST -Headers @{ Authorization="Bearer $managementToken" } -ContentType "application/json"
  
     Write-Debug $result
@@ -141,7 +141,7 @@ function List-StorageAccountKeys {
     return $result.key1
 }
 
-function List-CosmosDBKeys {
+function Get-CosmosDbKeys {
 
     param(
     [parameter(Mandatory=$true)]
@@ -161,7 +161,7 @@ function List-CosmosDBKeys {
 
     Write-Debug "Calling endpoint $uri"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method POST -Headers @{ Authorization="Bearer $managementToken" } -ContentType "application/json"
  
     Write-Debug $result
@@ -190,13 +190,13 @@ function Create-KeyVaultLinkedService {
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/linkedservices/$($Name)?api-version=2019-06-01-preview"
 
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method PUT -Body $keyVault -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
  
     return $result
 }
 
-function Create-BlobStorageLinkedService {
+function New-BlobStorageLinkedService {
     
     param(
     [parameter(Mandatory=$true)]
@@ -220,13 +220,13 @@ function Create-BlobStorageLinkedService {
     $keyVault = $keyVaultTemplate.Replace("#LINKED_SERVICE_NAME#", $Name).Replace("#STORAGE_ACCOUNT_NAME#", $Name).Replace("#STORAGE_ACCOUNT_KEY#", $Key)
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/linkedservices/$($Name)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method PUT -Body $keyVault -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
  
     return $result
 }
 
-function Create-DataLakeLinkedService {
+function New-DataLakeLinkedService {
     
     param(
     [parameter(Mandatory=$true)]
@@ -250,13 +250,13 @@ function Create-DataLakeLinkedService {
     $item = $itemTemplate.Replace("#LINKED_SERVICE_NAME#", $Name).Replace("#STORAGE_ACCOUNT_NAME#", $Name).Replace("#STORAGE_ACCOUNT_KEY#", $Key)
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/linkedservices/$($Name)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method PUT -Body $item -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     
     return $result
 }
 
-function Create-CosmosDBLinkedService {
+function New-CosmosDbLinkedService {
     
     param(
     [parameter(Mandatory=$true)]
@@ -286,7 +286,7 @@ function Create-CosmosDBLinkedService {
 
     Write-Information "Calling endpoint $uri"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method PUT -Body $cosmosDb -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
  
     Write-Information $result
@@ -294,7 +294,7 @@ function Create-CosmosDBLinkedService {
     return $result
 }
 
-function Create-SQLPoolKeyVaultLinkedService {
+function New-SqlPoolKeyVaultLinkedService {
     
     param(
     [parameter(Mandatory=$true)]
@@ -330,13 +330,13 @@ function Create-SQLPoolKeyVaultLinkedService {
     $item = $itemTemplate.Replace("#LINKED_SERVICE_NAME#", $Name).Replace("#WORKSPACE_NAME#", $WorkspaceName).Replace("#DATABASE_NAME#", $DatabaseName).Replace("#USER_NAME#", $UserName).Replace("#KEY_VAULT_LINKED_SERVICE_NAME#", $KeyVaultLinkedServiceName).Replace("#SECRET_NAME#", $SecretName)
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/linkedServices/$($Name)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method PUT -Body $item -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
 
     return $result
 }
 
-function Create-IntegrationRuntime {
+function New-IntegrationRuntime {
     
     param(
     [parameter(Mandatory=$true)]
@@ -372,7 +372,7 @@ function Create-IntegrationRuntime {
     $integrationRuntime = $integrationRuntimeTemplate.Replace("#INTEGRATION_RUNTIME_NAME#", $Name).Replace("#CORE_COUNT#", $CoreCount).Replace("#TIME_TO_LIVE#", $TimeToLive)
     $uri = "https://management.azure.com/subscriptions/$($SubscriptionId)/resourcegroups/$($ResourceGroupName)/providers/Microsoft.Synapse/workspaces/$($WorkspaceName)/integrationruntimes/$($Name)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method PUT -Body $integrationRuntime -Headers @{ Authorization="Bearer $managementToken" } -ContentType "application/json"
  
     return $result
@@ -400,7 +400,7 @@ function Get-IntegrationRuntime {
 
     $uri = "https://management.azure.com/subscriptions/$($SubscriptionId)/resourcegroups/$($ResourceGroupName)/providers/Microsoft.Synapse/workspaces/$($WorkspaceName)/integrationruntimes/$($Name)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
 
     try {
         $result = Invoke-RestMethod  -Uri $uri -Method GET -Headers @{ Authorization="Bearer $managementToken" }  
@@ -411,7 +411,7 @@ function Get-IntegrationRuntime {
     }
 }
 
-function Delete-IntegrationRuntime {
+function Remove-IntegrationRuntime {
     
     param(
     [parameter(Mandatory=$true)]
@@ -433,13 +433,13 @@ function Delete-IntegrationRuntime {
 
     $uri = "https://management.azure.com/subscriptions/$($SubscriptionId)/resourcegroups/$($ResourceGroupName)/providers/Microsoft.Synapse/workspaces/$($WorkspaceName)/integrationruntimes/$($Name)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method DELETE -Headers @{ Authorization="Bearer $managementToken" }
  
     return $result
 }
 
-function Create-Dataset {
+function New-Dataset {
     
     param(
     [parameter(Mandatory=$true)]
@@ -463,13 +463,13 @@ function Create-Dataset {
     $item = $itemTemplate.Replace("#LINKED_SERVICE_NAME#", $LinkedServiceName)
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/datasets/$($Name)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method PUT -Body $item -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     
     return $result
 }
 
-function Create-Pipeline {
+function New-Pipeline {
     
     param(
     [parameter(Mandatory=$true)]
@@ -503,13 +503,13 @@ function Create-Pipeline {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/pipelines/$($Name)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method PUT -Body $item -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     
     return $result
 }
 
-function Run-Pipeline {
+function Start-Pipeline {
     
     param(
 
@@ -524,7 +524,7 @@ function Run-Pipeline {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/pipelines/$($Name)/createRun?api-version=2018-06-01"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method POST -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     
     return $result
@@ -545,7 +545,7 @@ function Get-PipelineRun {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/pipelineruns/$($RunId)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
 
     $result = Invoke-RestMethod  -Uri $uri -Method GET -Headers @{ Authorization="Bearer $synapseToken" }
     
@@ -595,7 +595,7 @@ function Get-OperationResult {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/operationResults/$($OperationId)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method GET -Headers @{ Authorization="Bearer $synapseToken" }
     
     return $result
@@ -620,7 +620,7 @@ function Wait-ForOperation {
     }
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/operationResults/$($OperationId)?api-version=2019-06-01-preview"
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method GET -Headers @{ Authorization="Bearer $synapseToken" }
 
     while ($result.status -ne $null) {
@@ -631,14 +631,14 @@ function Wait-ForOperation {
 
         Write-Information "Waiting for operation to complete (status is $($result.status))..."
         Start-Sleep -Seconds 10
-        Ensure-ValidTokens
+        Confirm-ValidTokens
         $result = Invoke-RestMethod  -Uri $uri -Method GET -Headers @{ Authorization="Bearer $synapseToken" }
     }
 
     return $result
 }
 
-function Delete-ASAObject {
+function Remove-ASAObject {
     
     param(
    
@@ -657,7 +657,7 @@ function Delete-ASAObject {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/$($Category)/$($Name)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method DELETE -Headers @{ Authorization="Bearer $synapseToken" }
     
     return $result
@@ -682,7 +682,7 @@ function Get-ASAObject {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/$($Category)/$($Name)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method GET -Headers @{ Authorization="Bearer $synapseToken" }
     
     return $result
@@ -733,13 +733,13 @@ function Set-SqlAdministrator {
     }
 "@
     
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method $method -Body $json -Headers @{ Authorization="Bearer $managementToken" } -ContentType "application/json"
 
     return $result
 }
 
-function Control-SQLPool {
+function Set-SqlPool {
 
     param(
     [parameter(Mandatory=$true)]
@@ -787,7 +787,7 @@ function Control-SQLPool {
 
     }
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method $method -Body $body -Headers @{ Authorization="Bearer $managementToken" } -ContentType "application/json"
 
     return $result
@@ -815,7 +815,7 @@ function Get-SQLPool {
 
     $uri = "https://management.azure.com/subscriptions/$($SubscriptionId)/resourcegroups/$($ResourceGroupName)/providers/Microsoft.Synapse/workspaces/$($WorkspaceName)/sqlPools/$($SQLPoolName)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method GET -Headers @{ Authorization="Bearer $managementToken" } -ContentType "application/json"
 
     return $result
@@ -887,11 +887,11 @@ function Wait-ForSQLQuery {
     
     $sql = "select status from sys.dm_pdw_exec_requests where [label] = '$($Label)' and submit_time > '$($ReferenceTime.ToString("yyyy-MM-dd HH:mm:ss"))'"
 
-    $result = Execute-SQLQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery $sql
+    $result = Invoke-SqlQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery $sql
     while (($result.data[0][0] -ne "Cancelled") -and ($result.data[0][0] -ne "Completed")) {
         Write-Information "Current status is $($result.data[0][0]). Waiting for query to finish..."
             Start-Sleep -Seconds 10
-            $result = Execute-SQLQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery $sql
+            $result = Invoke-SqlQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery $sql
     }
 
     if ($result.data[0][0] -eq "Cancelled") {
@@ -901,7 +901,7 @@ function Wait-ForSQLQuery {
     Write-Information "The query was successfully executed."
 }
 
-function Execute-SQLQuery {
+function Invoke-SqlQuery {
 
     param(
     [parameter(Mandatory=$true)]
@@ -929,13 +929,13 @@ function Execute-SQLQuery {
 
     if ($ForceReturn) {
         try {
-            Ensure-ValidTokens
+            Confirm-ValidTokens
             $result = Invoke-WebRequest -Uri $uri -Method POST -Body $SQLQuery -Headers $headers -ContentType "application/x-www-form-urlencoded; charset=UTF-8" -UseBasicParsing -TimeoutSec 15
         } catch {}
         return
     }
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
 
     $csrf = GetCSRF "Bearer $synapseSQLToken" "$($WorkspaceName).sql.azuresynapse.net:1443" 300000;
     $headers.add("X-CSRF-Signature", $csrf);
@@ -1020,7 +1020,7 @@ function CallJavascript($message, $secret)
     return $ret;
 }
 
-function Execute-SQLScriptFile {
+function Invoke-SqlScriptFile {
 
     param(
     [parameter(Mandatory=$true)]
@@ -1065,7 +1065,7 @@ function Execute-SQLScriptFile {
     #https://go.microsoft.com/fwlink/?linkid=2082790
 
     if ($UseAPI) {
-        Execute-SQLQuery -WorkspaceName $WorkspaceName -SQLPoolName $SQLPoolName -SQLQuery $sqlQuery -ForceReturn $ForceReturn
+        Invoke-SqlQuery -WorkspaceName $WorkspaceName -SQLPoolName $SQLPoolName -SQLQuery $sqlQuery -ForceReturn $ForceReturn
     } else {
         if ($ForceReturn) {
             Invoke-SqlCmd -Query $sqlQuery -ServerInstance $sqlEndpoint -Database $sqlPoolName -Username $sqlUser -Password $global:sqlPassword
@@ -1077,7 +1077,7 @@ function Execute-SQLScriptFile {
     }
 }
 
-function Create-SQLScript {
+function New-SqlScript {
     
     param(
     [parameter(Mandatory=$true)]
@@ -1109,7 +1109,7 @@ function Create-SQLScript {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/sqlscripts/$($Name)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method PUT -Body $item -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     
     return $result
@@ -1137,13 +1137,13 @@ function Get-SparkPool {
 
     $uri = "https://management.azure.com/subscriptions/$($SubscriptionId)/resourcegroups/$($ResourceGroupName)/providers/Microsoft.Synapse/workspaces/$($WorkspaceName)/bigDataPools/$($SparkPoolName)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method GET -Headers @{ Authorization="Bearer $managementToken" } -ContentType "application/json"
 
     return $result
 }
 
-function Create-SparkNotebook {
+function New-SparkNotebook {
     
     param(
     [parameter(Mandatory=$true)]
@@ -1216,7 +1216,7 @@ function Create-SparkNotebook {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/notebooks/$($Name)?api-version=2019-06-01-preview"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method PUT -Body $item -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     
     return $result
@@ -1250,7 +1250,7 @@ function Start-SparkNotebookSession {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/$($SparkPoolName)/sessions"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method POST -Body $item -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     
     return $result
@@ -1273,7 +1273,7 @@ function Get-SparkNotebookSession {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/$($SparkPoolName)/sessions/$($SessionId)?detailed=true"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method GET -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     
     return $result
@@ -1309,7 +1309,7 @@ function Wait-ForSparkNotebookSession {
     return $result
 }
 
-function Delete-SparkNotebookSession {
+function Remove-SparkNotebookSession {
     param(
     [parameter(Mandatory=$true)]
     [String]
@@ -1326,7 +1326,7 @@ function Delete-SparkNotebookSession {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/$($SparkPoolName)/sessions/$($SessionId)"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method DELETE -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     
     return $result
@@ -1354,7 +1354,7 @@ function Start-SparkNotebookSessionStatement {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/$($SparkPoolName)/sessions/$($SessionId)/statements"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method POST -Body $Statement -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     
     return $result
@@ -1382,7 +1382,7 @@ function Get-SparkNotebookSessionStatement {
 
     $uri = "https://$($WorkspaceName).dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/$($SparkPoolName)/sessions/$($SessionId)/statements/$($StatementId)"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method GET -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     
     return $result
@@ -1422,7 +1422,7 @@ function Wait-ForSparkNotebookSessionStatement {
     return $result
 }
 
-function Count-CosmosDbDocuments {
+function Get-CosmosDbDocumentCount {
 
     param(
     [parameter(Mandatory=$true)]
@@ -1446,13 +1446,13 @@ function Count-CosmosDbDocuments {
     $CosmosDbContainer
     )
         
-    $cosmosDbAccountKey = List-CosmosDBKeys -SubscriptionId $SubscriptionId -ResourceGroupName $ResourceGroupName -Name $CosmosDbAccountName
+    $cosmosDbAccountKey = Get-CosmosDbKeys -SubscriptionId $SubscriptionId -ResourceGroupName $ResourceGroupName -Name $CosmosDbAccountName
     Write-Information "Successfully retrieved Cosmos DB master key"
 
     $resourceLink = "dbs/$($CosmosDbDatabase)/colls/$($CosmosDbContainer)"
     $uri = "https://$($CosmosDbAccountName).documents.azure.com/$($resourceLink)/docs"
     $refTime = [DateTime]::UtcNow.ToString("r")
-    $authHeader = Generate-CosmosDbMasterKeyAuthorizationSignature -verb POST -resourceLink $resourceLink -resourceType "docs" -key $cosmosDbAccountKey -keyType "master" -tokenVersion "1.0" -dateTime $refTime
+    $authHeader = New-CosmosDbMasterKeyAuthorizationSignature -verb POST -resourceLink $resourceLink -resourceType "docs" -key $cosmosDbAccountKey -keyType "master" -tokenVersion "1.0" -dateTime $refTime
     $headers = @{ 
             Authorization=$authHeader
             "Content-Type"="application/query+json"
@@ -1477,7 +1477,7 @@ function Count-CosmosDbDocuments {
     Write-Information "Successfully retrieved query plan"
 
     $pkUri = "https://$($CosmosDbAccountName).documents.azure.com/$($resourceLink)/pkranges"
-    $pkAuthHeader = Generate-CosmosDbMasterKeyAuthorizationSignature -verb GET -resourceLink $resourceLink -resourceType "pkranges" -key $cosmosDbAccountKey -keyType "master" -tokenVersion "1.0" -dateTime $refTime
+    $pkAuthHeader = New-CosmosDbMasterKeyAuthorizationSignature -verb GET -resourceLink $resourceLink -resourceType "pkranges" -key $cosmosDbAccountKey -keyType "master" -tokenVersion "1.0" -dateTime $refTime
     $pkHeaders = @{ 
             Authorization=$pkAuthHeader
             "x-ms-cosmos-allow-tentative-writes"="True"
@@ -1523,7 +1523,7 @@ function Count-CosmosDbDocuments {
     return $totalCount
 }
 
-function Assign-SynapseRole {
+function Set-SynapseRole {
 
     param(    
     [parameter(Mandatory=$true)]
@@ -1545,12 +1545,12 @@ function Assign-SynapseRole {
     $id = $RoleId + "-" + $PrincipalId
     $body = "{ id: ""$id"", roleId: ""$RoleId"", principalId: ""$PrincipalId"" }"
 
-    Ensure-ValidTokens
+    Confirm-ValidTokens
     $result = Invoke-RestMethod  -Uri $uri -Method $method -Body $body -Headers @{ Authorization="Bearer $synapseToken" } -ContentType "application/json"
     return $result
 }
 
-function Refresh-Token2()
+function Update-Token2()
 {
     $context = Get-AzureRmContext;
     
@@ -1561,13 +1561,13 @@ function Refresh-Token2()
 }
 
 #this will force refresh of all tokens
-function Refresh-Tokens {
+function Update-Tokens {
     for ($i = 0; $i -lt $tokenTimes.Count; $i++) {
-        Refresh-Token $($tokenTimes.Keys)[$i]
+        Update-Token $($tokenTimes.Keys)[$i]
     }
 }
 
-function Refresh-Token {
+function Update-Token {
     param(
     [parameter(Mandatory=$true)]
     [String]
@@ -1622,18 +1622,18 @@ function Refresh-Token {
     }
 }
 
-function Ensure-ValidTokens
+function Confirm-ValidTokens
 {
     param(
         [Boolean]$force=$false
     )
 
     for ($i = 0; $i -lt $tokenTimes.Count; $i++) {
-        Ensure-ValidToken $($tokenTimes.Keys)[$i] $force
+        Confirm-ValidToken $($tokenTimes.Keys)[$i] $force
     }
 }
 
-function Ensure-ValidToken {
+function Confirm-ValidToken {
     param(
         [parameter(Mandatory=$true)][String]$TokenName,
         [Boolean]$force=$false
@@ -1643,14 +1643,14 @@ function Ensure-ValidToken {
 
     if (($refTime - $tokenTimes[$TokenName]).TotalMinutes -gt 30 -or $force) {
         Write-Information "Refreshing $($TokenName) token."
-        Refresh-Token $TokenName
+        Update-Token $TokenName
         $tokenTimes[$TokenName] = $refTime
     }
     
-    #Refresh-Token;
+    #Update-Token;
 }
 
-Function Generate-CosmosDbMasterKeyAuthorizationSignature {
+Function New-CosmosDbMasterKeyAuthorizationSignature {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory=$true)][String]$verb,
@@ -1675,47 +1675,47 @@ Function Generate-CosmosDbMasterKeyAuthorizationSignature {
     [System.Web.HttpUtility]::UrlEncode("type=$keyType&ver=$tokenVersion&sig=$signature")
 }
 
-Export-ModuleMember -Function List-StorageAccountKeys
-Export-ModuleMember -Function List-CosmosDBKeys
+Export-ModuleMember -Function Get-StorageAccountKeys
+Export-ModuleMember -Function Get-CosmosDbKeys
 Export-ModuleMember -Function Create-KeyVaultLinkedService
-Export-ModuleMember -Function Create-BlobStorageLinkedService
-Export-ModuleMember -Function Create-DataLakeLinkedService
-Export-ModuleMember -Function Create-CosmosDBLinkedService
-Export-ModuleMember -Function Create-SQLPoolKeyVaultLinkedService
-Export-ModuleMember -Function Create-IntegrationRuntime
+Export-ModuleMember -Function New-BlobStorageLinkedService
+Export-ModuleMember -Function New-DataLakeLinkedService
+Export-ModuleMember -Function New-CosmosDbLinkedService
+Export-ModuleMember -Function New-SqlPoolKeyVaultLinkedService
+Export-ModuleMember -Function New-IntegrationRuntime
 Export-ModuleMember -Function Get-IntegrationRuntime
-Export-ModuleMember -Function Delete-IntegrationRuntime
-Export-ModuleMember -Function Create-Dataset
-Export-ModuleMember -Function Create-Pipeline
-Export-ModuleMember -Function Run-Pipeline
+Export-ModuleMember -Function Remove-IntegrationRuntime
+Export-ModuleMember -Function New-Dataset
+Export-ModuleMember -Function New-Pipeline
+Export-ModuleMember -Function Start-Pipeline
 Export-ModuleMember -Function Get-PipelineRun
 Export-ModuleMember -Function Wait-ForPipelineRun
 Export-ModuleMember -Function Get-OperationResult
 Export-ModuleMember -Function Wait-ForOperation
-Export-ModuleMember -Function Delete-ASAObject
+Export-ModuleMember -Function Remove-ASAObject
 Export-ModuleMember -Function Get-ASAObject
-Export-ModuleMember -Function Control-SQLPool
+Export-ModuleMember -Function Set-SqlPool
 Export-ModuleMember -Function Get-SQLPool
 Export-ModuleMember -Function Wait-ForSQLPool
-Export-ModuleMember -Function Execute-SQLQuery
-Export-ModuleMember -Function Execute-SQLScriptFile
+Export-ModuleMember -Function Invoke-SqlQuery
+Export-ModuleMember -Function Invoke-SqlScriptFile
 Export-ModuleMember -Function Wait-ForSQLQuery
-Export-ModuleMember -Function Create-SQLScript
+Export-ModuleMember -Function New-SqlScript
 Export-ModuleMember -Function Get-SparkPool
-Export-ModuleMember -Function Create-SparkNotebook
+Export-ModuleMember -Function New-SparkNotebook
 Export-ModuleMember -Function Start-SparkNotebookSession
 Export-ModuleMember -Function Get-SparkNotebookSession
 Export-ModuleMember -Function Wait-ForSparkNotebookSession
-Export-ModuleMember -Function Delete-SparkNotebookSession
+Export-ModuleMember -Function Remove-SparkNotebookSession
 Export-ModuleMember -Function Start-SparkNotebookSessionStatement
 Export-ModuleMember -Function Get-SparkNotebookSessionStatement
 Export-ModuleMember -Function Wait-ForSparkNotebookSessionStatement
-Export-ModuleMember -Function Assign-SynapseRole
-Export-ModuleMember -Function Refresh-Token
-Export-ModuleMember -Function Ensure-ValidTokens
-Export-ModuleMember -Function Generate-CosmosDbMasterKeyAuthorizationSignature
-Export-ModuleMember -Function Count-CosmosDbDocuments
-Export-ModuleMember -Function Check-HttpRedirect
+Export-ModuleMember -Function Set-SynapseRole
+Export-ModuleMember -Function Update-Token
+Export-ModuleMember -Function Confirm-ValidTokens
+Export-ModuleMember -Function New-CosmosDbMasterKeyAuthorizationSignature
+Export-ModuleMember -Function Get-CosmosDbDocumentCount
+Export-ModuleMember -Function Confirm-HttpRedirect
 Export-ModuleMember -Function GetCSRF
 Export-ModuleMember -Function AutoPauseAll
 Export-ModuleMember -Function Set-SqlAdministrator

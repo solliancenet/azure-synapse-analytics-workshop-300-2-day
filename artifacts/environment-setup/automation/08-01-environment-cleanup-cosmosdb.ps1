@@ -66,7 +66,7 @@ $global:tokenTimes = [ordered]@{
 
 
 Write-Information "Counting Cosmos DB item in database $($cosmosDbDatabase), container $($cosmosDbContainer)"
-$documentCount = Count-CosmosDbDocuments -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -CosmosDbAccountName $cosmosDbAccountName `
+$documentCount = Get-CosmosDbDocumentCount -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -CosmosDbAccountName $cosmosDbAccountName `
                 -CosmosDbDatabase $cosmosDbDatabase -CosmosDbContainer $cosmosDbContainer
 
 if ($documentCount -ne 100000) {
@@ -107,27 +107,27 @@ Set-AzCosmosDBSqlContainer -ResourceGroupName $resourceGroupName `
 
 $name = "wwi02_online_user_profiles_01_adal"
 Write-Information "Create dataset $($name)"
-$result = Create-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $name -LinkedServiceName $dataLakeAccountName
+$result = New-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $name -LinkedServiceName $dataLakeAccountName
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 Write-Information "Create Cosmos DB linked service $($cosmosDbAccountName)"
-$cosmosDbAccountKey = List-CosmosDBKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $cosmosDbAccountName
-$result = Create-CosmosDBLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $cosmosDbAccountName -Database $cosmosDbDatabase -Key $cosmosDbAccountKey
+$cosmosDbAccountKey = Get-CosmosDbKeys -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -Name $cosmosDbAccountName
+$result = New-CosmosDbLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $cosmosDbAccountName -Database $cosmosDbDatabase -Key $cosmosDbAccountKey
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 $name = "customer_profile_cosmosdb"
 Write-Information "Create dataset $($name)"
-$result = Create-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $name -LinkedServiceName $cosmosDbAccountName
+$result = New-Dataset -DatasetsPath $datasetsPath -WorkspaceName $workspaceName -Name $name -LinkedServiceName $cosmosDbAccountName
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 $name = "Setup - Import User Profile Data into Cosmos DB"
 $fileName = "import_customer_profiles_into_cosmosdb"
 Write-Information "Create pipeline $($name)"
-$result = Create-Pipeline -PipelinesPath $pipelinesPath -WorkspaceName $workspaceName -Name $name -FileName $fileName
+$result = New-Pipeline -PipelinesPath $pipelinesPath -WorkspaceName $workspaceName -Name $name -FileName $fileName
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 Write-Information "Running pipeline $($name)"
-$pipelineRunResult = Run-Pipeline -WorkspaceName $workspaceName -Name $name
+$pipelineRunResult = Start-Pipeline -WorkspaceName $workspaceName -Name $name
 $result = Wait-ForPipelineRun -WorkspaceName $workspaceName -RunId $pipelineRunResult.runId
 $result
 
@@ -152,22 +152,22 @@ Set-AzCosmosDBSqlContainer -ResourceGroupName $resourceGroupName `
 
 $name = "Setup - Import User Profile Data into Cosmos DB"
 Write-Information "Delete pipeline $($name)"
-$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "pipelines" -Name $name
+$result = Remove-ASAObject -WorkspaceName $workspaceName -Category "pipelines" -Name $name
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 $name = "customer_profile_cosmosdb"
 Write-Information "Delete dataset $($name)"
-$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $name
+$result = Remove-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $name
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 $name = "wwi02_online_user_profiles_01_adal"
 Write-Information "Delete dataset $($name)"
-$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $name
+$result = Remove-ASAObject -WorkspaceName $workspaceName -Category "datasets" -Name $name
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 $name = $cosmosDbAccountName
 Write-Information "Delete linked service $($name)"
-$result = Delete-ASAObject -WorkspaceName $workspaceName -Category "linkedServices" -Name $name
+$result = Remove-ASAObject -WorkspaceName $workspaceName -Category "linkedServices" -Name $name
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 }

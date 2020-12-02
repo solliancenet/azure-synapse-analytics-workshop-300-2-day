@@ -69,7 +69,7 @@ Write-Information "Start the $($sqlPoolName) SQL pool if needed."
 
 $result = Get-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName
 if ($result.properties.status -ne "Online") {
-    Control-SQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action resume
+    Set-SqlPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -Action resume
     Wait-ForSQLPool -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -TargetStatus Online
 }
 
@@ -86,12 +86,12 @@ WHERE
     S.name in ('external', 'wwi_external', 'wwi_staging')
 "@
 
-$result = Execute-SQLQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery $query
+$result = Invoke-SqlQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery $query
 if ($result -and $result.data) {
         foreach ($dataRow in $result.data) {
                 Write-Information "Deleting $($dataRow[0])..."
 
-                Execute-SQLQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery "DROP TABLE $($dataRow[0])"
+                Invoke-SqlQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery "DROP TABLE $($dataRow[0])"
         }
 }
 
@@ -106,12 +106,12 @@ WHERE
     S.name + '.' + T.name not in ('wwi_ml.MLModelExt')
 "@
 
-$result = Execute-SQLQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery $query
+$result = Invoke-SqlQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery $query
 if ($result -and $result.data) {
         foreach ($dataRow in $result.data) {
                 Write-Information "Deleting $($dataRow[0])..."
 
-                Execute-SQLQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery "DROP EXTERNAL TABLE $($dataRow[0])"
+                Invoke-SqlQuery -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -SQLQuery "DROP EXTERNAL TABLE $($dataRow[0])"
         }
 }
 
@@ -120,9 +120,9 @@ if ($result -and $result.data) {
 Write-Information "Cleanup SQL pool $($sqlPoolName)"
 
 $params = @{}
-$result = Execute-SQLScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "19-cleanup-sql-pool" -Parameters $params
+$result = Invoke-SqlScriptFile -SQLScriptsPath $sqlScriptsPath -WorkspaceName $workspaceName -SQLPoolName $sqlPoolName -FileName "19-cleanup-sql-pool" -Parameters $params
 $result
 
 Write-Information "Reset result set caching for SQL pool $($sqlPoolName)"
 $query = "ALTER DATABASE [$($sqlPoolName)] SET RESULT_SET_CACHING ON"
-$result = Execute-SQLQuery -WorkspaceName $workspaceName -SQLPoolName "master" -SQLQuery $query
+$result = Invoke-SqlQuery -WorkspaceName $workspaceName -SQLPoolName "master" -SQLQuery $query
