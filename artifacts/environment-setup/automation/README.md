@@ -136,7 +136,7 @@
 
 ## Path #2 (Cloud Shell)
 
-> **Important**: Due to the amount of time required to run the environment setup scripts, you will very likely time out on the Cloud Shell before the script completes.
+> **NOT RECOMMENDED**: Due to the amount of time required to run the environment setup scripts, you will very likely time out on the Cloud Shell before the script completes.
 
 ### Task 1: Download artifacts
 
