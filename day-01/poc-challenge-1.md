@@ -45,7 +45,7 @@ You can find the CSV files for May 2017 in the following path: `wwi-02 / sale-po
 > 1. Do not make assumptions about the condition or quality of the data in the CSV files. Synapse Studio allows you to open files using either SQL or Spark in the Data hub to explore the first few files in the May 2017 dataset prior to importing it into tables. Do the data types found in the tables match what you are seeing in the files?
 > 2. Look for issues that could impact your ability to cleanly import the files using a code-free approach (e.g., Are there values in fields that might cause issues? Are the files properly formatted as CSV files?)
 > 3. Take a few minutes to understand the capabilities of Synapse Pipelines, Synapse SQL, and Spark for handling problematic files.
-> 4. Don't be afraid to embrace the Spark side to address any problem files!
+> 4. Don't be afraid to embrace the Spark-side to address any problem files!
 
 You can find the Parquet files in the following paths:
 

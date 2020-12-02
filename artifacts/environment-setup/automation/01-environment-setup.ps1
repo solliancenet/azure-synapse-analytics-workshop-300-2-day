@@ -227,12 +227,12 @@ if ($download)
         Write-Information "Copying sample sales raw data directories from the public data account..."
 
         $dataDirectories = @{
-                salesmall2014 = "wwi-02,wwi-02/sale-small/Year=2014"
-                salesmall2015 = "wwi-02,wwi-02/sale-small/Year=2015"
-                salesmall2016 = "wwi-02,wwi-02/sale-small/Year=2016"
-                salesmall2017 = "wwi-02,wwi-02/sale-small/Year=2017"
-                salesmall2018 = "wwi-02,wwi-02/sale-small/Year=2018"
-                salesmall2019 = "wwi-02,wwi-02/sale-small/Year=2019"
+                salesmall2014 = "wwi-02/sale-small,wwi-02/sale-small/Year=2014"
+                salesmall2015 = "wwi-02/sale-small,wwi-02/sale-small/Year=2015"
+                salesmall2016 = "wwi-02/sale-small,wwi-02/sale-small/Year=2016"
+                salesmall2017 = "wwi-02/sale-small,wwi-02/sale-small/Year=2017"
+                salesmall2018 = "wwi-02/sale-small,wwi-02/sale-small/Year=2018"
+                salesmall2019 = "wwi-02/sale-small,wwi-02/sale-small/Year=2019"
                 salespoc = "wwi-02,wwi-02/sale-poc/"
         }
 
@@ -242,7 +242,7 @@ if ($download)
 
                 $source = $publicDataUrl + $vals[1];
 
-                $path = $vals[1];
+                $path = $vals[0];
 
                 $destination = $dataLakeStorageBlobUrl + $path + $destinationSasKey
                 Write-Information "Copying directory $($source) to $($destination)"
