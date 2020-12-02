@@ -130,15 +130,9 @@
 
 8. Execute `./01-environment-setup.ps1`
 
-9. Change the current directory to the **LabFiles** folder of the cloned repository by executing the following:
+9. Execute `./07-01-environment-poc-pre-validate.ps1`
 
-    ```PowerShell
-    cd C:\LabFiles
-    ```
-
-10. Execute `.\artifacts\environment-setup\automation\07-01-environment-poc-pre-validate.ps1`
-
-11. Execute `.\artifacts\environment-setup\automation\07-02-environment-poc-validate.ps1`
+10. Execute `./07-02-environment-poc-validate.ps1`
 
 ## Path #2 (Cloud Shell)
 
