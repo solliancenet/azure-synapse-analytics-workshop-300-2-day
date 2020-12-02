@@ -141,7 +141,7 @@ Set-AzKeyVaultSecret -VaultName $keyVaultName -Name $keyVaultSQLUserSecretName -
 
 Write-Information "Create KeyVault linked service $($keyVaultName)"
 
-$result = Create-KeyVaultLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $keyVaultName
+$result = New-KeyVaultLinkedService -TemplatesPath $templatesPath -WorkspaceName $workspaceName -Name $keyVaultName
 Wait-ForOperation -WorkspaceName $workspaceName -OperationId $result.operationId
 
 Write-Information "Create Integration Runtime $($integrationRuntimeName)"

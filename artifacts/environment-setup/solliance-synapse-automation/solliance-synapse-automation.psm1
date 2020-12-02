@@ -169,7 +169,7 @@ function Get-CosmosDbKeys {
     return $result.primaryMasterKey
 }
 
-function Create-KeyVaultLinkedService {
+function New-KeyVaultLinkedService {
     
     param(
     [parameter(Mandatory=$true)]
@@ -1677,7 +1677,7 @@ Function New-CosmosDbMasterKeyAuthorizationSignature {
 
 Export-ModuleMember -Function Get-StorageAccountKeys
 Export-ModuleMember -Function Get-CosmosDbKeys
-Export-ModuleMember -Function Create-KeyVaultLinkedService
+Export-ModuleMember -Function New-KeyVaultLinkedService
 Export-ModuleMember -Function New-BlobStorageLinkedService
 Export-ModuleMember -Function New-DataLakeLinkedService
 Export-ModuleMember -Function New-CosmosDbLinkedService
